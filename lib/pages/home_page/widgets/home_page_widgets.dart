@@ -21,32 +21,16 @@ PreferredSizeWidget appBar({
     backgroundColor: Theme.of(context).colorScheme.background,
     elevation: 0,
     actions: [
-      IconButton(
-        icon: Stack(
-          alignment: Alignment.center, // Posiziona il + al centro del disco
-          children: [
-            SizedBox(
-              height: 50,
-              child: Icon(
-                Icons.album, // Icona del disco
-                color: Theme.of(context).colorScheme.primary,
-                size: 40, // Dimensione maggiore per il disco
-              ),
-            ),
-            SizedBox(
-              height: 50,
-              child: Icon(
-                Icons.add,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onBackground, // Colore diverso per il +
-                size:
-                    18, // Dimensione del + per farlo entrare nel buco del disco
-              ),
-            ),
-          ],
+      Container(
+        margin: const EdgeInsets.only(right: 16),
+        child: IconButton(
+          icon: Icon(
+            Icons.account_circle_rounded,
+            color: Theme.of(context).colorScheme.onBackground,
+            size: 40,
+          ),
+          onPressed: () => controller.profileDialog(),
         ),
-        onPressed: () => controller.paginaDettaglio(),
       ),
     ],
   );
@@ -94,13 +78,19 @@ Widget barraOrdinamento({
   var controller = HomePageController(context: context);
 
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+    padding: const EdgeInsets.only(
+      left: 16.0,
+      top: 8.0,
+      bottom: 8,
+    ),
     child: Row(
       children: [
-        Text('Ordina per:',
-            style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onBackground,
-                )),
+        Text(
+          'Ordina per:',
+          style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+        ),
         const SizedBox(width: 16),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -122,6 +112,36 @@ Widget barraOrdinamento({
             onChanged: (value) {
               controller.ordinaDati(ordering: value!);
             },
+          ),
+        ),
+        const SizedBox(width: 50),
+        Expanded(
+          child: IconButton(
+            icon: Stack(
+              alignment: Alignment.center, // Posiziona il + al centro del disco
+              children: [
+                SizedBox(
+                  height: 50,
+                  child: Icon(
+                    Icons.album, // Icona del disco
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 40, // Dimensione maggiore per il disco
+                  ),
+                ),
+                SizedBox(
+                  height: 50,
+                  child: Icon(
+                    Icons.add,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onBackground, // Colore diverso per il +
+                    size:
+                        18, // Dimensione del + per farlo entrare nel buco del disco
+                  ),
+                ),
+              ],
+            ),
+            onPressed: () => controller.paginaDettaglio(),
           ),
         ),
       ],

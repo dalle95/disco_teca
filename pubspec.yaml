@@ -38,6 +38,16 @@ dependencies:
 
   flutter_secure_storage: ^9.2.2
   google_fonts: ^5.1.0
+  fluttertoast: ^8.2.1
+
+  # Firebase
+  firebase_core: ^2.27.0
+  firebase_crashlytics: ^3.4.14
+  firebase_remote_config: ^4.3.13
+  firebase_remote_config_web: ^1.4.21
+  firebase_core_web: ^2.11.4
+  firebase_auth: ^4.17.4
+  cloud_firestore: ^4.15.4
 
   flutter_localizations:
     sdk: flutter
@@ -49,6 +59,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "icons/logo.png"
+  adaptive_icon_background: "#191919"
+  adaptive_icon_foreground: "icons/logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

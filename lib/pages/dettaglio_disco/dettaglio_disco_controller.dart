@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 
 import '/commons/entities/disco.dart';
 import '/commons/utils/error_util.dart';
+import '/commons/data/api/dischi_api.dart';
 
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_bloc.dart';
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_events.dart';
@@ -63,7 +64,7 @@ class DettaglioDiscoController {
   }
 
   /// Funzione per salvare le modifiche al dettaglio
-  void aggiornaDettaglio() {
+  void aggiornaDettaglio() async {
     Logger().d('Funzione: aggiornaDettaglio');
 
     Disco disco = context.read<DettaglioDiscoBloc>().state.disco;
@@ -73,20 +74,32 @@ class DettaglioDiscoController {
     // Controllo se il dettaglio è da aggiornare o da aggiungere
     if (disco.id != null) {
       // Aggiornamento dettaglio già esistente
-      // Aggiorno la lista
-      context.read<HomeBloc>().add(
-            HomeUpdateDatiEvent(
-              disco: disco,
-            ),
-          );
+
+      // Aggiorna i dati su Firebase
+      await DiscoApi().aggiornaDisco(disco);
+
+      // Aggiorno la lista nel bloc
+      if (context.mounted) {
+        context.read<HomeBloc>().add(
+              HomeUpdateDatiEvent(
+                disco: disco,
+              ),
+            );
+      }
     } else {
       // Aggiunta nuovo elemento
-      // Aggiorno la lista
-      context.read<HomeBloc>().add(
-            HomeCreateDatiEvent(
-              disco: disco,
-            ),
-          );
+
+      // Aggiungo i dati su Firebase
+      disco = await DiscoApi().creaDisco(disco);
+
+      // Aggiorno la lista nel bloc
+      if (context.mounted) {
+        context.read<HomeBloc>().add(
+              HomeCreateDatiEvent(
+                disco: disco,
+              ),
+            );
+      }
     }
   }
 }

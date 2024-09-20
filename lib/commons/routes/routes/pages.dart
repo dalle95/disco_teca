@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 
+import '/global.dart';
+
 import '/commons/routes/routes/names.dart';
 
+import '/pages/auth/ui/auth_page.dart';
+import '/pages/auth/bloc/auth_blocs.dart';
 import '/pages/home_page/bloc/home_blocs.dart';
 import '/pages/home_page/ui/home_page.dart';
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_bloc.dart';
@@ -13,6 +17,20 @@ class AppPages {
   /// Lista di routes, pagine e bloc unite
   static List<PageEntity> routes() {
     return [
+      PageEntity(
+        route: AppRoutes.INITIAL,
+        page: const AuthPage(),
+        bloc: BlocProvider(
+          create: (_) => AuthBloc(),
+        ),
+      ),
+      PageEntity(
+        route: AppRoutes.AUTHENTICATION,
+        page: const AuthPage(),
+        bloc: BlocProvider(
+          create: (_) => AuthBloc(),
+        ),
+      ),
       PageEntity(
         route: AppRoutes.HOME_PAGE,
         page: const HomePage(),
@@ -27,27 +45,6 @@ class AppPages {
           create: (_) => DettaglioDiscoBloc(),
         ),
       ),
-      // PageEntity(
-      //   route: AppRoutes.PLANNER_GLOBALE,
-      //   page: const PlannerGlobalePage(),
-      //   bloc: BlocProvider(
-      //     create: (_) => PlannerGlobaleBloc(),
-      //   ),
-      // ),
-      // PageEntity(
-      //   route: AppRoutes.CLIENTI,
-      //   page: const ClientiPage(),
-      //   bloc: BlocProvider(
-      //     create: (_) => ClientiBloc(),
-      //   ),
-      // ),
-      // PageEntity(
-      //   route: AppRoutes.DETTAGLIO_CLIENTE,
-      //   page: const DettaglioClientePage(),
-      //   bloc: BlocProvider(
-      //     create: (_) => DettaglioClienteBloc(),
-      //   ),
-      // ),
     ];
   }
 
@@ -79,49 +76,29 @@ class AppPages {
         (element) => element.route == settings.name,
       );
 
-      if (settings.name == '/') {
-        return const HomePage();
+      // Controllo sia presente una route associata
+      if (result.isNotEmpty) {
+        if (result.first.route == AppRoutes.INITIAL) {
+          // Estraggo il dato se l'utente è già loggato estranedo le info dal device
+          bool isLoggedin = await Global.storageService.getIsLoggedIn();
+
+          logger.d('Utente loggato? $isLoggedin');
+
+          // Controllo se l'utente è già loggato
+          if (isLoggedin) {
+            // Se è già loggato visualizza la Homepage
+            return const HomePage();
+          }
+
+          // Altrimenti visualizza lo pagina di Autenticazione
+          return const AuthPage();
+        } else {
+          return result.first.page;
+        }
       }
-      return result.first.page;
-
-      //     // Controllo sia presente una route associata
-      //     if (result.isNotEmpty) {
-      //       // Controllo se la route è quella iniziale
-      //       if (result.first.route == AppRoutes.INITIAL) {
-      //         // Estraggo la configurazione
-      //         bool isConfigured =
-      //             await Global.storageService.getUrlAmbiente() != null;
-
-      //         logger.d('Configurazione presente? $isConfigured');
-      //         // Controllo se la configurazione è già presente
-      //         if (isConfigured) {
-      //           // Estraggo il dato se l'utente è già loggato estranedo le info dal device
-      //           bool isLoggedin = await Global.storageService.getIsLoggedIn();
-
-      //           logger.d('Utente loggato? $isLoggedin');
-
-      //           // Controllo se l'utente è già loggato
-      //           if (isLoggedin) {
-      //             // Se è già loggato visualizza la Homepage
-      //             return const HomePage();
-      //           }
-
-      //           // Altrimenti visualizza lo pagina di Autenticazione
-      //           return const AuthPage();
-      //         } else {
-      //           // Se non è presente un nome della pagina visualizza la pagina di Configurazione
-      //           return const ConfigurationPage();
-      //         }
-      //       }
-      //       // Se la route non è quella iniziale visualizza la pagina richiesta
-      //       return result.first.page;
-      //     }
-      //   }
-      //   // Se non è presente un nome della pagina visualizza la pagina di Configurazione
-      //   return const ConfigurationPage();
-      // }
     }
-    return const HomePage();
+
+    return const AuthPage();
   }
 }
 

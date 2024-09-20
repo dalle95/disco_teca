@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:disco_teca/commons/entities/disco.dart';
+import 'package:disco_teca/commons/values/constant.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class StorageService {
@@ -13,7 +14,7 @@ class StorageService {
   }
 
   /// Funzione per salvare i dati
-  Future<void> saveData(String key, dynamic data) async {
+  Future<void> saveData({required String key, required dynamic data}) async {
     String jsonData = json.encode(data);
     await _prefs.write(key: key, value: jsonData);
   }
@@ -28,7 +29,7 @@ class StorageService {
   }
 
   /// Funzione per rimuovere i dati
-  Future<void> removeData(String key) async {
+  Future<void> removeData({required String key}) async {
     await _prefs.delete(key: key);
   }
 
@@ -72,12 +73,12 @@ class StorageService {
   //       : false;
   // }
 
-  // // Controllo se l'utente è loggato
-  // Future<bool> getIsLoggedIn() async {
-  //   return await _prefs.read(key: AppConstants.STORAGE_USER_DATA) == null
-  //       ? false
-  //       : true;
-  // }
+  // Controllo se l'utente è loggato
+  Future<bool> getIsLoggedIn() async {
+    return await _prefs.read(key: AppConstants.STORAGE_USER_DATA) == null
+        ? false
+        : true;
+  }
 
   // // Estrazione informazioni autenticazione
   // Future<User> getUserProfile() async {
@@ -99,10 +100,5 @@ class StorageService {
   // // Estrazione del token di autenticazione
   // Future<String?> getUserToken() async {
   //   return _prefs.read(key: AppConstants.STORAGE_USER_TOKEN);
-  // }
-
-  // // Estrazione url Ambiente
-  // Future<String?> getUrlAmbiente() async {
-  //   return await _prefs.read(key: AppConstants.SERVER_API_URL);
   // }
 }

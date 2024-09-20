@@ -8,7 +8,8 @@ class AppRoutes {
   static const HOME_PAGE = "/home_page";
 
   // Pagina Dettaglio Cliente
-  static const DETTAGLIO_DISCO = "/dettaglio_cliente";
+  static const DETTAGLIO_DISCO = "/dettaglio_disco";
+
   // Authentication page
   static const AUTHENTICATION = "/authentication";
 

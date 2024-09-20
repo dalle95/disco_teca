@@ -83,7 +83,12 @@ class DettaglioDiscoBloc
 
   void _onUpdateTipologia(
       UpdateTipologiaEvent event, Emitter<DettaglioDiscoState> emit) {
-    emit(state.copyWith(tipologia: event.tipologia));
+    emit(
+      state.copyWith(
+        tipologia: event.tipologia,
+        disco: state.disco.copyWith(tipologia: event.tipologia),
+      ),
+    );
   }
 
   void _onMostraLato(MostraLatoEvent event, Emitter<DettaglioDiscoState> emit) {

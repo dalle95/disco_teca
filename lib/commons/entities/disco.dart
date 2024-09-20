@@ -1,5 +1,6 @@
 class Disco {
   final String? id;
+  final String? userID;
   final String? giri;
   final String? artista;
   final String? posizione;
@@ -25,6 +26,7 @@ class Disco {
 
   const Disco({
     this.id,
+    this.userID,
     this.giri,
     this.artista,
     this.posizione,
@@ -52,6 +54,7 @@ class Disco {
   factory Disco.empty() {
     return const Disco(
       id: null,
+      userID: null,
       giri: '33',
       artista: '',
       posizione: '',
@@ -79,6 +82,7 @@ class Disco {
 
   Disco copyWith({
     String? id,
+    String? userID,
     String? tipologia,
     String? autore,
     String? posizione,
@@ -106,6 +110,7 @@ class Disco {
   }) {
     return Disco(
       id: id ?? this.id,
+      userID: userID ?? this.userID,
       giri: tipologia ?? giri,
       artista: autore ?? artista,
       posizione: posizione ?? this.posizione,
@@ -134,6 +139,7 @@ class Disco {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'userID': userID,
       'tipologia': giri,
       'autore': artista,
       'posizione': posizione,
@@ -162,6 +168,7 @@ class Disco {
   static Disco fromJson(Map<String, dynamic> json) {
     return Disco(
       id: json['id'],
+      userID: json['userID'],
       giri: json['tipologia'],
       artista: json['autore'],
       posizione: json['posizione'],

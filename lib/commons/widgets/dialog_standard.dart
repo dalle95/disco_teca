@@ -14,7 +14,7 @@ void dialogStandardPopUp({
     builder: (ctx) => AlertDialog(
       title: Text(
         title,
-        style: const TextStyle(color: AppColors.appBarColor),
+        style: TextStyle(color: Theme.of(context).colorScheme.primary),
         textAlign: TextAlign.center,
       ),
       content: Text(content),
@@ -22,23 +22,23 @@ void dialogStandardPopUp({
       actions: [
         TextButton(
           onPressed: () {
-            acceptFunction();
             Navigator.of(ctx).pop();
+            acceptFunction();
           },
           style: TextButton.styleFrom(
-            backgroundColor: AppColors.elevatedButtonColor,
-            foregroundColor: AppColors.primaryBackground,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onBackground,
           ),
           child: const Text('Conferma'),
         ),
         TextButton(
           onPressed: () {
-            deniedFunction();
             Navigator.of(ctx).pop();
+            deniedFunction();
           },
           style: TextButton.styleFrom(
-            backgroundColor: AppColors.primaryBackground,
-            foregroundColor: AppColors.elevatedButtonColor,
+            backgroundColor: Theme.of(context).colorScheme.onBackground,
+            foregroundColor: Theme.of(context).colorScheme.primary,
           ),
           child: const Text('Annulla'),
         ),

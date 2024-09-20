@@ -1,13 +1,17 @@
 import 'dart:convert';
 
-import 'package:disco_teca/commons/routes/routes/names.dart';
-import 'package:disco_teca/global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 
+import '/global.dart';
+
 import '/commons/data/api/dischi_api.dart';
 import '/commons/entities/disco.dart';
+import '/commons/routes/routes/names.dart';
+import '/commons/widgets/dialog_standard.dart';
+
+import '/pages/auth/auth_controller.dart';
 import '/pages/home_page/bloc/home_blocs.dart';
 import '/pages/home_page/bloc/home_events.dart';
 
@@ -24,7 +28,7 @@ class HomePageController {
     await Future.delayed(Duration.zero);
 
     // Funzione di estrazione dati dei clienti
-    lista = await DiscoApi.estraiDati();
+    lista = await DiscoApi().estraiDati();
 
     // Aggiorno il planner tramite il bloc
     if (context.mounted) {
@@ -217,5 +221,23 @@ class HomePageController {
       AppRoutes.DETTAGLIO_DISCO,
       arguments: arguments,
     );
+  }
+
+  /// Dialogo per effettuare il logout
+  void profileDialog() {
+    dialogStandardPopUp(
+      context: context,
+      title: 'Disconnetti',
+      content: 'Disconnettere l\'account?',
+      acceptFunction: () {
+        removeUserData();
+      },
+      deniedFunction: () {},
+    );
+  }
+
+  // Funzione per effetturare il logout
+  Future<void> removeUserData() async {
+    AuthController(context: context).logout();
   }
 }
