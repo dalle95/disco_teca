@@ -102,4 +102,24 @@ class DettaglioDiscoController {
       }
     }
   }
+
+  void impostaGiri(String tipo) {
+    context.read<DettaglioDiscoBloc>().add(
+          UpdateTipologiaEvent(
+            tipologia: tipo,
+          ),
+        );
+  }
+
+  void selezionaLato(int index) {
+    context.read<DettaglioDiscoBloc>().add(
+          MostraLatoEvent(lato: index == 0 ? 'A' : 'B'),
+        );
+  }
+
+  void aggiornaValore({required String field, required String value}) {
+    context.read<DettaglioDiscoBloc>().add(
+          UpdateFieldEvent(field: field, value: value),
+        );
+  }
 }
