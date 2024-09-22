@@ -25,3 +25,7 @@ class AuthState {
     );
   }
 }
+
+class AuthLoadingState extends AuthState {
+  AuthLoadingState() : super();
+}

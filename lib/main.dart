@@ -1,3 +1,4 @@
+import 'package:disco_teca/commons/widgets/loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -45,10 +46,8 @@ class App extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   // Mostra un indicatore di caricamento mentre attendi il risultato
-                  return const Scaffold(
-                    body: Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                  return Scaffold(
+                    body: loadingView(context: context),
                   );
                 } else if (snapshot.hasError) {
                   // Gestisci eventuali errori

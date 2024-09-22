@@ -2,6 +2,10 @@ abstract class AuthEvent {
   const AuthEvent();
 }
 
+class LoadingEvent extends AuthEvent {
+  LoadingEvent();
+}
+
 class VistaEvent extends AuthEvent {
   const VistaEvent();
 }

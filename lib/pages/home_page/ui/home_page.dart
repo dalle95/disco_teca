@@ -32,13 +32,13 @@ class _HomePageState extends State<HomePage> {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
-          appBar: appBar(context: context),
+          appBar: buildAppBar(context: context),
           body: Column(
             children: [
-              inputRicerca(
+              buildInputRicerca(
                   context: context, searchController: searchController),
-              barraOrdinamento(context: context),
-              elencoDischi(context: context),
+              buildBarraOrdinamento(context: context),
+              buildElencoDischi(context: context),
             ],
           ),
         );

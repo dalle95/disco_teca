@@ -1,6 +1,9 @@
+import 'package:disco_teca/commons/utils/assets_utils.dart';
+import 'package:disco_teca/commons/widgets/loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:logger/logger.dart';
 
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_bloc.dart';
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_states.dart';
@@ -33,24 +36,26 @@ class _DettaglioDiscoPageState extends State<DettaglioDiscoPage> {
       appBar: buildAppBar(context: context),
       body: BlocBuilder<DettaglioDiscoBloc, DettaglioDiscoState>(
         builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ListView(
-              children: [
-                // Selezione Tipologia (33, 45, 78) con immagini e etichette
-                buildSelezioneDisco(context: context),
-                const Gap(16),
+          return state is DettaglioDiscoLoadingState
+              ? loadingView(context: context)
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
+                    children: [
+                      // Selezione Tipologia (33, 45, 78) con immagini e etichette
+                      buildSelezioneDisco(context: context),
+                      const Gap(16),
 
-                buildSezioneInformazioniDisco(context: context),
-                const Gap(24),
+                      buildSezioneInformazioniDisco(context: context),
+                      const Gap(24),
 
-                buildSelezioneLatoDisco(context: context),
+                      buildSelezioneLatoDisco(context: context),
 
-                const Gap(16),
-                buildSezioneBrani(context: context),
-              ],
-            ),
-          );
+                      const Gap(16),
+                      buildSezioneBrani(context: context),
+                    ],
+                  ),
+                );
         },
       ),
     );

@@ -6,6 +6,7 @@ class DettaglioDiscoState {
   final Disco disco;
   final TextEditingController artistaController;
   final TextEditingController posizioneController;
+  final TextEditingController ordineController;
   final TextEditingController titoloAlbumController;
   final TextEditingController annoController;
   final TextEditingController valoreController;
@@ -32,6 +33,7 @@ class DettaglioDiscoState {
     required this.disco,
     required this.artistaController,
     required this.posizioneController,
+    required this.ordineController,
     required this.titoloAlbumController,
     required this.annoController,
     required this.valoreController,
@@ -60,6 +62,7 @@ class DettaglioDiscoState {
       disco: const Disco(),
       artistaController: TextEditingController(),
       posizioneController: TextEditingController(),
+      ordineController: TextEditingController(),
       titoloAlbumController: TextEditingController(),
       annoController: TextEditingController(),
       valoreController: TextEditingController(),
@@ -88,6 +91,7 @@ class DettaglioDiscoState {
     Disco? disco,
     TextEditingController? artistaController,
     TextEditingController? posizioneController,
+    TextEditingController? ordineController,
     TextEditingController? titoloAlbumController,
     TextEditingController? annoController,
     TextEditingController? valoreController,
@@ -114,6 +118,7 @@ class DettaglioDiscoState {
       disco: disco ?? this.disco,
       artistaController: artistaController ?? this.artistaController,
       posizioneController: posizioneController ?? this.posizioneController,
+      ordineController: ordineController ?? this.ordineController,
       titoloAlbumController:
           titoloAlbumController ?? this.titoloAlbumController,
       annoController: annoController ?? this.annoController,
@@ -138,4 +143,35 @@ class DettaglioDiscoState {
       lato: lato ?? this.lato,
     );
   }
+}
+
+class DettaglioDiscoLoadingState extends DettaglioDiscoState {
+  DettaglioDiscoLoadingState()
+      : super(
+          disco: const Disco(),
+          artistaController: TextEditingController(),
+          posizioneController: TextEditingController(),
+          ordineController: TextEditingController(),
+          titoloAlbumController: TextEditingController(),
+          annoController: TextEditingController(),
+          valoreController: TextEditingController(),
+          brano1AController: TextEditingController(),
+          brano2AController: TextEditingController(),
+          brano3AController: TextEditingController(),
+          brano4AController: TextEditingController(),
+          brano5AController: TextEditingController(),
+          brano6AController: TextEditingController(),
+          brano7AController: TextEditingController(),
+          brano8AController: TextEditingController(),
+          brano1BController: TextEditingController(),
+          brano2BController: TextEditingController(),
+          brano3BController: TextEditingController(),
+          brano4BController: TextEditingController(),
+          brano5BController: TextEditingController(),
+          brano6BController: TextEditingController(),
+          brano7BController: TextEditingController(),
+          brano8BController: TextEditingController(),
+          tipologia: '33',
+          lato: 'A',
+        );
 }

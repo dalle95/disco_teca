@@ -9,6 +9,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<UsernameEvent>(_usernameEvent);
     on<PasswordEvent>(_passwordEvent);
     on<Password2Event>(_password2Event);
+    on<LoadingEvent>(_loadingEvent);
   }
 
   void _vistaEvent(VistaEvent event, Emitter<AuthState> emit) {
@@ -29,5 +30,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _password2Event(Password2Event event, Emitter<AuthState> emit) {
     emit(state.copyWith(password2: event.password2));
+  }
+
+  void _loadingEvent(LoadingEvent event, Emitter<AuthState> emit) {
+    emit(AuthLoadingState());
   }
 }

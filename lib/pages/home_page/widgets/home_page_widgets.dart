@@ -1,12 +1,14 @@
+import 'package:disco_teca/commons/utils/assets_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 import '/commons/entities/disco.dart';
 import '/pages/home_page/bloc/home_blocs.dart';
 import '/pages/home_page/home_page_controller.dart';
 
 /// Widget per l'appBar
-PreferredSizeWidget appBar({
+PreferredSizeWidget buildAppBar({
   required BuildContext context,
 }) {
   var controller = HomePageController(context: context);
@@ -37,7 +39,7 @@ PreferredSizeWidget appBar({
 }
 
 // Widget per la ricerca dei dischi
-Widget inputRicerca({
+Widget buildInputRicerca({
   required BuildContext context,
   required TextEditingController searchController,
 }) {
@@ -49,7 +51,7 @@ Widget inputRicerca({
       controller: searchController,
       style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
       decoration: InputDecoration(
-        hintText: 'Cerca per album, artisti, anno o brano',
+        hintText: 'Cerca per album, artista, anno o brano',
         hintStyle: TextStyle(
             color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6)),
         prefixIcon:
@@ -71,7 +73,7 @@ Widget inputRicerca({
 }
 
 /// Widget per la barra di ricerca dei dischi
-Widget barraOrdinamento({
+Widget buildBarraOrdinamento({
   required BuildContext context,
 }) {
   var state = context.read<HomeBloc>().state;
@@ -103,7 +105,8 @@ Widget barraOrdinamento({
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             dropdownColor: Theme.of(context).colorScheme.surface,
             underline: const SizedBox(),
-            items: ['Titolo', 'Artista', 'Anno'].map((String value) {
+            items:
+                ['Artista', 'Titolo', 'Anno', 'Posizione'].map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value),
@@ -114,7 +117,16 @@ Widget barraOrdinamento({
             },
           ),
         ),
-        const SizedBox(width: 50),
+        const Gap(15),
+        // Expanded(
+        //   child: IconButton(
+        //     onPressed: () {},
+        //     icon: Icon(
+        //       Icons.filter_list_outlined,
+        //       size: 40,
+        //     ),
+        //   ),
+        // ),
         Expanded(
           child: IconButton(
             icon: Stack(
@@ -149,7 +161,7 @@ Widget barraOrdinamento({
   );
 }
 
-Widget elencoDischi({
+Widget buildElencoDischi({
   required BuildContext context,
 }) {
   var state = context.read<HomeBloc>().state;
@@ -172,20 +184,6 @@ Widget discoItem({
 }) {
   var controller = HomePageController(context: context);
 
-  // Definire il percorso dell'immagine in base alla tipologia del disco
-  String getIconPath(String? tipologia) {
-    switch (tipologia) {
-      case '33':
-        return 'assets/icons/vinyl-record-blue.png';
-      case '45':
-        return 'assets/icons/vinyl-record-red.png';
-      case '78':
-        return 'assets/icons/vinyl-record-violet.png';
-      default:
-        return 'assets/icons/vinyl-record-blue.png'; // Icona predefinita in caso di valore non valido
-    }
-  }
-
   return Card(
     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     color: Theme.of(context).colorScheme.surface,
@@ -196,13 +194,13 @@ Widget discoItem({
     child: ListTile(
       contentPadding: const EdgeInsets.all(16),
       title: Text(
-        disco.titoloAlbum!,
+        disco.artista!,
         style: Theme.of(context).textTheme.displayMedium?.copyWith(
               color: Theme.of(context).colorScheme.primary,
             ),
       ),
       subtitle: Text(
-        '${disco.artista} - ${disco.anno}',
+        '${disco.titoloAlbum} - ${disco.anno}',
         style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
       ),
       leading: Image.asset(
@@ -211,6 +209,28 @@ Widget discoItem({
         ), // Seleziona l'icona giusta in base alla tipologia
         width: 48,
         height: 48,
+      ),
+      trailing: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Ordine',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: 12,
+              ),
+            ),
+            Text(
+              disco.ordine == null ? 'Nessuno' : disco.ordine.toString(),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
       ),
       onTap: () {
         controller.paginaDettaglio(arguments: disco.toJson());

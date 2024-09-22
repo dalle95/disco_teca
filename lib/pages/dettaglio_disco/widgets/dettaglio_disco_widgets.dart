@@ -95,7 +95,7 @@ Widget buildSelezioneDisco({required BuildContext context}) {
               style: TextStyle(
                 color: state.tipologia == tipo
                     ? Theme.of(context).colorScheme.primary
-                    : Colors.black,
+                    : Colors.grey,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -120,6 +120,16 @@ Widget buildSezioneInformazioniDisco({required BuildContext context}) {
       ),
       const Gap(16),
 
+      // Titolo Album
+      TextField(
+        decoration:
+            buildInputDecoration(context: context, label: 'Titolo Album'),
+        controller: state.titoloAlbumController,
+        onChanged: (value) =>
+            controller.aggiornaValore(field: 'titoloAlbum', value: value),
+      ),
+      const Gap(16),
+
       // Posizione
       TextField(
         decoration: buildInputDecoration(context: context, label: 'Posizione'),
@@ -129,13 +139,12 @@ Widget buildSezioneInformazioniDisco({required BuildContext context}) {
       ),
       const Gap(16),
 
-      // Titolo Album
+      // Ordine
       TextField(
-        decoration:
-            buildInputDecoration(context: context, label: 'Titolo Album'),
-        controller: state.titoloAlbumController,
+        decoration: buildInputDecoration(context: context, label: 'Ordine'),
+        controller: state.ordineController,
         onChanged: (value) =>
-            controller.aggiornaValore(field: 'titoloAlbum', value: value),
+            controller.aggiornaValore(field: 'ordine', value: value),
       ),
       const Gap(16),
 

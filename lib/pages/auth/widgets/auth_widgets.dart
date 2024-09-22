@@ -109,7 +109,7 @@ Widget buildPulsanteSwitchVista({required BuildContext context}) {
     child: Text(
       state.vista == 'Login'
           ? 'Non hai un account? Registrati'
-          : 'Accedi subito',
+          : 'Sei già registrato? Accedi subito',
       style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
     ),
   );

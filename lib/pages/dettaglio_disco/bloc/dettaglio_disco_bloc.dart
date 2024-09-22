@@ -7,10 +7,20 @@ import '/pages/dettaglio_disco/bloc/dettaglio_disco_states.dart';
 class DettaglioDiscoBloc
     extends Bloc<DettaglioDiscoEvent, DettaglioDiscoState> {
   DettaglioDiscoBloc() : super(DettaglioDiscoState.initial()) {
+    on<LoadingEvent>(_onLoading);
     on<InitializeEvent>(_onInitialize);
     on<UpdateFieldEvent>(_onUpdateField);
     on<MostraLatoEvent>(_onMostraLato);
     on<UpdateTipologiaEvent>(_onUpdateTipologia);
+  }
+
+  void _onLoading(
+    LoadingEvent event,
+    Emitter<DettaglioDiscoState> emit,
+  ) {
+    emit(
+      DettaglioDiscoLoadingState(),
+    );
   }
 
   void _onInitialize(
@@ -24,11 +34,17 @@ class DettaglioDiscoBloc
         lato: 'A',
         artistaController: TextEditingController(text: event.disco.artista),
         posizioneController: TextEditingController(text: event.disco.posizione),
+        ordineController: TextEditingController(
+          text: event.disco.ordine == 0 || event.disco.ordine == null
+              ? ''
+              : event.disco.ordine.toString(),
+        ),
         titoloAlbumController:
             TextEditingController(text: event.disco.titoloAlbum),
         annoController: TextEditingController(text: event.disco.anno),
         valoreController: TextEditingController(
-            text: event.disco.valore == 0 ? '' : event.disco.valore.toString()),
+          text: event.disco.valore == 0 ? '' : event.disco.valore.toString(),
+        ),
         brano1AController: TextEditingController(text: event.disco.brano1A),
         brano2AController: TextEditingController(text: event.disco.brano2A),
         brano3AController: TextEditingController(text: event.disco.brano3A),
@@ -55,6 +71,9 @@ class DettaglioDiscoBloc
       autore: event.field == 'artista' ? event.value : state.disco.artista,
       posizione:
           event.field == 'posizione' ? event.value : state.disco.posizione,
+      ordine: event.field == 'ordine'
+          ? int.tryParse(event.value)
+          : state.disco.ordine,
       titoloAlbum:
           event.field == 'titoloAlbum' ? event.value : state.disco.titoloAlbum,
       anno: event.field == 'anno' ? event.value : state.disco.anno,

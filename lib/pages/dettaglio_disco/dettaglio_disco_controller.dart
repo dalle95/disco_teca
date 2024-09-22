@@ -40,6 +40,11 @@ class DettaglioDiscoController {
   Future<void> estraiDettaglio() async {
     Logger().d('Funzione: estraiDettaglio');
 
+    // Emissione dello stato di loading
+    if (context.mounted) {
+      context.read<DettaglioDiscoBloc>().add(LoadingEvent());
+    }
+
     Disco disco = Disco.empty();
 
     // Estraggo i dati passati come argomento e li converto in entità

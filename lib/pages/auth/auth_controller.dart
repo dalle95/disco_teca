@@ -36,6 +36,8 @@ class AuthController {
       String? password = state.password;
       String? password2 = state.password2;
 
+      context.read<AuthBloc>().add(LoadingEvent());
+
       // Controlli classici
       if (email == null && password == null) {
         // Alter di validazione

@@ -2,6 +2,10 @@ import 'package:disco_teca/commons/entities/disco.dart';
 
 abstract class DettaglioDiscoEvent {}
 
+class LoadingEvent extends DettaglioDiscoEvent {
+  LoadingEvent();
+}
+
 class InitializeEvent extends DettaglioDiscoEvent {
   final Disco disco;
   InitializeEvent({required this.disco});

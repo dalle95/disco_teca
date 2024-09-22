@@ -24,9 +24,6 @@ class HomePageController {
   Future<void> estraiDati() async {
     List<Disco> lista = [];
 
-    // Fake awaiting time
-    await Future.delayed(Duration.zero);
-
     // Funzione di estrazione dati dei clienti
     lista = await DiscoApi().estraiDati();
 
@@ -54,9 +51,13 @@ class HomePageController {
       lista.sort(
         (a, b) => a.anno!.compareTo(b.anno!),
       );
-    } else {
+    } else if (ordering == 'Artista') {
       lista.sort(
         (a, b) => a.artista!.compareTo(b.artista!),
+      );
+    } else {
+      lista.sort(
+        (a, b) => a.posizione!.compareTo(b.posizione!),
       );
     }
 

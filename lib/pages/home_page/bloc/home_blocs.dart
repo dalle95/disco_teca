@@ -9,7 +9,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc()
       : super(
           const HomeState(
-            ordering: 'Titolo',
+            ordering: 'Artista',
           ),
         ) {
     on<HomeDatiEvent>(_datiEvent);

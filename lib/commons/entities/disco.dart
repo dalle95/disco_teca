@@ -4,6 +4,7 @@ class Disco {
   final String? giri;
   final String? artista;
   final String? posizione;
+  final int? ordine;
   final String? titoloAlbum;
   final String? anno;
   final double? valore;
@@ -30,6 +31,7 @@ class Disco {
     this.giri,
     this.artista,
     this.posizione,
+    this.ordine,
     this.titoloAlbum,
     this.anno,
     this.valore,
@@ -58,6 +60,7 @@ class Disco {
       giri: '33',
       artista: '',
       posizione: '',
+      ordine: 0,
       titoloAlbum: '',
       anno: '',
       valore: 0,
@@ -86,6 +89,7 @@ class Disco {
     String? tipologia,
     String? autore,
     String? posizione,
+    int? ordine,
     String? titoloAlbum,
     String? anno,
     double? valore,
@@ -114,6 +118,7 @@ class Disco {
       giri: tipologia ?? giri,
       artista: autore ?? artista,
       posizione: posizione ?? this.posizione,
+      ordine: ordine ?? this.ordine,
       titoloAlbum: titoloAlbum ?? this.titoloAlbum,
       anno: anno ?? this.anno,
       valore: valore ?? this.valore,
@@ -143,6 +148,7 @@ class Disco {
       'tipologia': giri,
       'autore': artista,
       'posizione': posizione,
+      'ordine': ordine,
       'titoloAlbum': titoloAlbum,
       'anno': anno,
       'valore': valore,
@@ -172,6 +178,7 @@ class Disco {
       giri: json['tipologia'],
       artista: json['autore'],
       posizione: json['posizione'],
+      ordine: json['ordine'],
       titoloAlbum: json['titoloAlbum'],
       anno: json['anno'],
       valore: json['valore'],
