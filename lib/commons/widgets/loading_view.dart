@@ -1,7 +1,7 @@
 import 'package:disco_teca/commons/utils/assets_utils.dart';
 import 'package:flutter/material.dart';
 
-Widget loadingView({required BuildContext context}) {
+Widget buildLoadingView({required BuildContext context}) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,

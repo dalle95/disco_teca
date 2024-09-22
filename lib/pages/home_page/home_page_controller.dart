@@ -22,18 +22,10 @@ class HomePageController {
 
   /// Funzione per estrarre la lista dei clienti o delle locazioni
   Future<void> estraiDati() async {
-    List<Disco> lista = [];
-
-    // Funzione di estrazione dati dei clienti
-    lista = await DiscoApi().estraiDati();
-
     // Aggiorno il planner tramite il bloc
     if (context.mounted) {
       context.read<HomeBloc>().add(
-            HomeDatiEvent(
-              lista: lista,
-              filtroAttivo: false,
-            ),
+            HomeInitDatiEvent(),
           );
     }
   }
@@ -64,7 +56,7 @@ class HomePageController {
     // Aggiorno il planner tramite il bloc
     if (context.mounted) {
       context.read<HomeBloc>().add(
-            HomeDatiEvent(
+            HomeUpdateDatiEvent(
               lista: lista,
               ordering: ordering,
             ),
@@ -181,7 +173,7 @@ class HomePageController {
     // Aggiorno la lista
     if (context.mounted) {
       context.read<HomeBloc>().add(
-            HomeDatiEvent(
+            HomeUpdateDatiEvent(
               lista: lista,
               filtroAttivo: true,
             ),
@@ -208,7 +200,7 @@ class HomePageController {
     // Aggiorno l'elenco tramite il bloc
     if (context.mounted) {
       context.read<HomeBloc>().add(
-            HomeDatiEvent(
+            HomeUpdateDatiEvent(
               lista: lista,
               filtroAttivo: false,
             ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '/commons/widgets/loading_view.dart';
+
 import '/pages/home_page/bloc/home_blocs.dart';
 import '/pages/home_page/bloc/home_states.dart';
 import '/pages/home_page/home_page_controller.dart';
@@ -33,14 +35,16 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
           appBar: buildAppBar(context: context),
-          body: Column(
-            children: [
-              buildInputRicerca(
-                  context: context, searchController: searchController),
-              buildBarraOrdinamento(context: context),
-              buildElencoDischi(context: context),
-            ],
-          ),
+          body: state is HomeLoadingState
+              ? buildLoadingView(context: context)
+              : Column(
+                  children: [
+                    buildInputRicerca(
+                        context: context, searchController: searchController),
+                    buildBarraOrdinamento(context: context),
+                    buildElencoDischi(context: context),
+                  ],
+                ),
         );
       },
     );

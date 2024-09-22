@@ -11,6 +11,11 @@ class InitializeEvent extends DettaglioDiscoEvent {
   InitializeEvent({required this.disco});
 }
 
+class UpdateEvent extends DettaglioDiscoEvent {
+  final Disco disco;
+  UpdateEvent({required this.disco});
+}
+
 class UpdateFieldEvent extends DettaglioDiscoEvent {
   final String field;
   final String value;

@@ -4,27 +4,38 @@ abstract class HomeEvent {
   const HomeEvent();
 }
 
-class HomeDatiEvent extends HomeEvent {
+class HomeInitDatiEvent extends HomeEvent {
   final List<Disco>? lista;
   final bool? filtroAttivo;
   final String? ordering;
-  const HomeDatiEvent({
+  const HomeInitDatiEvent({
     this.lista,
     this.filtroAttivo,
     this.ordering,
   });
 }
 
-class HomeCreateDatiEvent extends HomeEvent {
+class HomeUpdateDatiEvent extends HomeEvent {
+  final List<Disco>? lista;
+  final bool? filtroAttivo;
+  final String? ordering;
+  const HomeUpdateDatiEvent({
+    this.lista,
+    this.filtroAttivo,
+    this.ordering,
+  });
+}
+
+class HomeCreateDatoEvent extends HomeEvent {
   final Disco? disco;
-  const HomeCreateDatiEvent({
+  const HomeCreateDatoEvent({
     this.disco,
   });
 }
 
-class HomeUpdateDatiEvent extends HomeEvent {
+class HomeUpdateDatoEvent extends HomeEvent {
   final Disco? disco;
-  const HomeUpdateDatiEvent({
+  const HomeUpdateDatoEvent({
     this.disco,
   });
 }

@@ -27,3 +27,14 @@ class HomeState {
     );
   }
 }
+
+class HomeLoadingState extends HomeState {
+  final List<Disco> lista;
+  final bool filtroAttivo;
+  final String? ordering;
+  HomeLoadingState({
+    this.lista = const [],
+    this.filtroAttivo = false,
+    this.ordering,
+  });
+}

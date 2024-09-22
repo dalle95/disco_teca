@@ -47,7 +47,7 @@ class App extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   // Mostra un indicatore di caricamento mentre attendi il risultato
                   return Scaffold(
-                    body: loadingView(context: context),
+                    body: buildLoadingView(context: context),
                   );
                 } else if (snapshot.hasError) {
                   // Gestisci eventuali errori

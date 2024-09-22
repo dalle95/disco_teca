@@ -1,9 +1,10 @@
-import 'package:disco_teca/commons/utils/assets_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
+import '/commons/utils/assets_utils.dart';
 import '/commons/entities/disco.dart';
+
 import '/pages/home_page/bloc/home_blocs.dart';
 import '/pages/home_page/home_page_controller.dart';
 
@@ -165,14 +166,18 @@ Widget buildElencoDischi({
   required BuildContext context,
 }) {
   var state = context.read<HomeBloc>().state;
+  var controller = HomePageController(context: context);
 
   return Expanded(
-    child: ListView.builder(
-      itemCount: state.lista.length,
-      itemBuilder: (context, index) {
-        final disco = state.lista[index];
-        return discoItem(context: context, disco: disco);
-      },
+    child: RefreshIndicator(
+      onRefresh: () => controller.estraiDati(),
+      child: ListView.builder(
+        itemCount: state.lista.length,
+        itemBuilder: (context, index) {
+          final disco = state.lista[index];
+          return discoItem(context: context, disco: disco);
+        },
+      ),
     ),
   );
 }

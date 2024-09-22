@@ -37,7 +37,7 @@ class _DettaglioDiscoPageState extends State<DettaglioDiscoPage> {
       body: BlocBuilder<DettaglioDiscoBloc, DettaglioDiscoState>(
         builder: (context, state) {
           return state is DettaglioDiscoLoadingState
-              ? loadingView(context: context)
+              ? buildLoadingView(context: context)
               : Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ListView(

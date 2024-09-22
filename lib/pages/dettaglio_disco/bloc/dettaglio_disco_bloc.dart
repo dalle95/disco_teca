@@ -7,24 +7,61 @@ import '/pages/dettaglio_disco/bloc/dettaglio_disco_states.dart';
 class DettaglioDiscoBloc
     extends Bloc<DettaglioDiscoEvent, DettaglioDiscoState> {
   DettaglioDiscoBloc() : super(DettaglioDiscoState.initial()) {
-    on<LoadingEvent>(_onLoading);
     on<InitializeEvent>(_onInitialize);
+    on<UpdateEvent>(_onUpdate);
     on<UpdateFieldEvent>(_onUpdateField);
     on<MostraLatoEvent>(_onMostraLato);
     on<UpdateTipologiaEvent>(_onUpdateTipologia);
   }
 
-  void _onLoading(
-    LoadingEvent event,
+  void _onInitialize(
+    InitializeEvent event,
     Emitter<DettaglioDiscoState> emit,
-  ) {
+  ) async {
+    emit(DettaglioDiscoLoadingState());
+
+    await Future.delayed(Duration.zero);
+
     emit(
-      DettaglioDiscoLoadingState(),
+      state.copyWith(
+        tipologia: event.disco.giri,
+        disco: event.disco,
+        lato: 'A',
+        artistaController: TextEditingController(text: event.disco.artista),
+        posizioneController: TextEditingController(text: event.disco.posizione),
+        ordineController: TextEditingController(
+          text: event.disco.ordine == 0 || event.disco.ordine == null
+              ? ''
+              : event.disco.ordine.toString(),
+        ),
+        titoloAlbumController:
+            TextEditingController(text: event.disco.titoloAlbum),
+        annoController: TextEditingController(text: event.disco.anno),
+        valoreController: TextEditingController(
+          text: event.disco.valore == 0 ? '' : event.disco.valore.toString(),
+        ),
+        brano1AController: TextEditingController(text: event.disco.brano1A),
+        brano2AController: TextEditingController(text: event.disco.brano2A),
+        brano3AController: TextEditingController(text: event.disco.brano3A),
+        brano4AController: TextEditingController(text: event.disco.brano4A),
+        brano5AController: TextEditingController(text: event.disco.brano5A),
+        brano6AController: TextEditingController(text: event.disco.brano6A),
+        brano7AController: TextEditingController(text: event.disco.brano7A),
+        brano8AController: TextEditingController(text: event.disco.brano8A),
+        brano1BController: TextEditingController(text: event.disco.brano1B),
+        brano2BController: TextEditingController(text: event.disco.brano2B),
+        brano3BController: TextEditingController(text: event.disco.brano3B),
+        brano4BController: TextEditingController(text: event.disco.brano4B),
+        brano5BController: TextEditingController(text: event.disco.brano5B),
+        brano6BController: TextEditingController(text: event.disco.brano6B),
+        brano7BController: TextEditingController(text: event.disco.brano7B),
+        brano8BController: TextEditingController(text: event.disco.brano8B),
+      ),
     );
   }
 
-  void _onInitialize(
-    InitializeEvent event,
+  void _onUpdate(
+    UpdateEvent event,
     Emitter<DettaglioDiscoState> emit,
   ) {
     emit(

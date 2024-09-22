@@ -18,7 +18,7 @@ class AuthPage extends StatelessWidget {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
           body: state is AuthLoadingState
-              ? loadingView(context: context)
+              ? buildLoadingView(context: context)
               : Stack(
                   children: [
                     // Background con effetto vinile
