@@ -48,8 +48,6 @@ class DiscoApi extends BaseRepository {
         Map<String, dynamic> elemento = element.data() as Map<String, dynamic>;
         String id = element.reference.id;
 
-        logger.d(elemento);
-
         Disco disco = Disco.fromJson(elemento);
 
         disco.copyWith(id: id);

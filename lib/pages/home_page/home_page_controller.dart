@@ -6,7 +6,6 @@ import 'package:logger/logger.dart';
 
 import '/global.dart';
 
-import '/commons/data/api/dischi_api.dart';
 import '/commons/entities/disco.dart';
 import '/commons/routes/routes/names.dart';
 import '/commons/widgets/dialog_standard.dart';
@@ -208,10 +207,39 @@ class HomePageController {
     }
   }
 
-  /// Apertura pagina dettaglio
-  void paginaDettaglio({Map<String, dynamic>? arguments}) {
+  /// Apertura pagina dettaglio Disco
+  void paginaDettaglioDisco({Map<String, dynamic>? arguments}) {
+    if (arguments == null) {
+      final filtroStrutturato =
+          context.read<HomeBloc>().state.filtroStrutturato;
+      Logger().d(filtroStrutturato);
+
+      if (filtroStrutturato != null) {
+        final giri = filtroStrutturato.containsKey('giri')
+            ? filtroStrutturato['giri']
+            : null;
+        final posizione = filtroStrutturato.containsKey('posizione')
+            ? filtroStrutturato['posizione']
+            : null;
+
+        arguments = Disco(
+          giri: giri,
+          posizione: posizione,
+          valore: 0,
+        ).toJson();
+      }
+    }
+
     Navigator.of(context).pushNamed(
       AppRoutes.DETTAGLIO_DISCO,
+      arguments: arguments,
+    );
+  }
+
+  /// Apertura pagina Fitlro
+  void paginaFiltro({Map<String, dynamic>? arguments}) {
+    Navigator.of(context).pushNamed(
+      AppRoutes.FILTRO,
       arguments: arguments,
     );
   }

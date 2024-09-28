@@ -13,6 +13,9 @@ class AppRoutes {
   // Authentication page
   static const AUTHENTICATION = "/authentication";
 
+  // Pagina di filtro
+  static const FILTRO = "/filtro";
+
   // Settings of the app
   static const SETTINGS = "/settings";
 

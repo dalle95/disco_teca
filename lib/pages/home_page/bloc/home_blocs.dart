@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 
 import '/commons/data/api/dischi_api.dart';
 import '/commons/entities/disco.dart';
@@ -25,7 +26,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     emit(
       HomeLoadingState(
-        filtroAttivo: state.filtroAttivo,
         lista: state.lista,
         ordering: state.ordering,
       ),
@@ -39,7 +39,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(
       state.copyWith(
         lista: lista,
-        filtroAttivo: state.filtroAttivo,
         ordering: state.ordering,
       ),
     );
@@ -49,10 +48,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     HomeUpdateDatiEvent event,
     Emitter<HomeState> emit,
   ) async {
+    Logger().d(
+        'Lista: ${event.lista.toString()}, Filtro: ${event.filtroStrutturatoAttivo}');
     emit(
       state.copyWith(
         lista: event.lista,
         filtroAttivo: event.filtroAttivo,
+        filtroStrutturatoAttivo: event.filtroStrutturatoAttivo,
+        filtroStrutturato: event.filtroStrutturato,
         ordering: event.ordering,
       ),
     );
@@ -72,6 +75,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         break;
       }
     }
+
+    Logger().d(lista.length);
     emit(
       state.copyWith(
         lista: lista,

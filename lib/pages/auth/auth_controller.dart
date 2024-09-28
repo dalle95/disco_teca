@@ -118,10 +118,6 @@ class AuthController {
     // Disconnessione utente da Firebase
     AuthenticationApi().logout();
 
-    // Per eliminare lo stato del AuthBloc
-    context.read<AuthBloc>().add(const UsernameEvent(null));
-    context.read<AuthBloc>().add(const PasswordEvent(null));
-
     // Per rimuover i dati di autenticazione salvati sul dispositivo
     Global.storageService.removeData(key: AppConstants.STORAGE_USER_DATA);
 

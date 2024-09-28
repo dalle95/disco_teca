@@ -1,3 +1,8 @@
+import 'package:disco_teca/commons/entities/disco.dart';
+import 'package:disco_teca/pages/dettaglio_disco/bloc/dettaglio_disco_events.dart';
+import 'package:disco_teca/pages/filtro_dischi/bloc/filtro_dischi_blocs.dart';
+import 'package:disco_teca/pages/filtro_dischi/bloc/filtro_dischi_events.dart';
+import 'package:disco_teca/pages/filtro_dischi/ui/filtro_dischi_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
@@ -18,87 +23,96 @@ class AppPages {
   static List<PageEntity> routes() {
     return [
       PageEntity(
-        route: AppRoutes.INITIAL,
-        page: const AuthPage(),
-        bloc: BlocProvider(
-          create: (_) => AuthBloc(),
-        ),
-      ),
-      PageEntity(
         route: AppRoutes.AUTHENTICATION,
         page: const AuthPage(),
-        bloc: BlocProvider(
-          create: (_) => AuthBloc(),
-        ),
+        bloc: AuthBloc(),
       ),
       PageEntity(
         route: AppRoutes.HOME_PAGE,
         page: const HomePage(),
-        bloc: BlocProvider(
-          create: (_) => HomeBloc(),
-        ),
+        bloc: HomeBloc(),
       ),
       PageEntity(
         route: AppRoutes.DETTAGLIO_DISCO,
         page: const DettaglioDiscoPage(),
-        bloc: BlocProvider(
-          create: (_) => DettaglioDiscoBloc(),
-        ),
+        bloc: DettaglioDiscoBloc(disco: Disco.empty()),
+      ),
+      PageEntity(
+        route: AppRoutes.FILTRO,
+        page: const FiltroDischiPage(),
+        bloc: FiltroDischiBloc(),
       ),
     ];
   }
 
-  /// Funzione per estrarre la lista dei bloc
-  static List<dynamic> allBlocProviders(BuildContext context) {
-    List<dynamic> blocProviders = <dynamic>[];
-    // Itero per ogni routes per estrarre tutti i bloc
-    for (var bloc in routes()) {
-      // Controllo che il bloc esiste
-      if (bloc.bloc != null) {
-        // Aggiungo alla lista dei bloc
-        blocProviders.add(bloc.bloc);
-      }
-    }
-    return blocProviders;
-  }
-
-  ///Funzione per gestire il routing
+  /// Funzione per gestire il routing
   static Future<Widget> generateRouteSettings(RouteSettings settings) async {
-    // Per gestire i log
+    // Logger per monitorare la route
     var logger = Logger();
-
     logger.d('Nome route: ${settings.name}');
 
-    // Controllo se è presente il nome di una pagina
-    if (settings.name != null) {
-      // Controllo il match della route con il nome della pagina quando il navigator viene eseguito
-      var result = routes().where(
-        (element) => element.route == settings.name,
-      );
+    // Se la route è '/' (iniziale), controlla lo stato di login
+    if (settings.name == AppRoutes.INITIAL) {
+      bool isLoggedIn = await Global.storageService.getIsLoggedIn();
+      logger.d('Utente loggato? $isLoggedIn');
 
-      // Controllo sia presente una route associata
-      if (result.isNotEmpty) {
-        if (result.first.route == AppRoutes.INITIAL) {
-          // Estraggo il dato se l'utente è già loggato estranedo le info dal device
-          bool isLoggedin = await Global.storageService.getIsLoggedIn();
-
-          logger.d('Utente loggato? $isLoggedin');
-
-          // Controllo se l'utente è già loggato
-          if (isLoggedin) {
-            // Se è già loggato visualizza la Homepage
-            return const HomePage();
-          }
-
-          // Altrimenti visualizza lo pagina di Autenticazione
-          return const AuthPage();
-        } else {
-          return result.first.page;
-        }
+      // Controllo dello stato di autenticazione
+      if (isLoggedIn) {
+        return HomePage();
+      } else {
+        return BlocProvider(
+          create: (_) => AuthBloc(),
+          child: const AuthPage(),
+        );
       }
     }
 
-    return const AuthPage();
+    // Gestione delle altre rotte
+    var result = routes().where((element) => element.route == settings.name);
+
+    if (result.isNotEmpty) {
+      if (result.first.route == AppRoutes.DETTAGLIO_DISCO) {
+        return BlocProvider(
+          create: (_) => DettaglioDiscoBloc(
+            disco: settings.arguments != null
+                ? Disco.fromJson(settings.arguments as Map<String, dynamic>)
+                : Disco.empty(),
+          )..add(
+              InitializeEvent(
+                disco: settings.arguments != null
+                    ? Disco.fromJson(settings.arguments as Map<String, dynamic>)
+                    : Disco.empty(),
+              ),
+            ),
+          child: result.first.page,
+        );
+      }
+
+      if (result.first.route == AppRoutes.FILTRO) {
+        return BlocProvider(
+          create: (_) => FiltroDischiBloc()
+            ..add(
+              FiltroDischiInitEvent(),
+            ),
+          child: result.first.page,
+        );
+      }
+
+      if (result.first.route == AppRoutes.AUTHENTICATION) {
+        return BlocProvider(
+          create: (_) => AuthBloc(),
+          child: result.first.page,
+        );
+      } else {
+        return result.first.page;
+      }
+    }
+
+    // Se nessuna route matcha, reindirizza alla pagina di autenticazione
+    return BlocProvider(
+      create: (_) => AuthBloc(),
+      child: const AuthPage(),
+    );
   }
 }
 
@@ -106,7 +120,7 @@ class AppPages {
 class PageEntity {
   String route;
   Widget page;
-  dynamic bloc;
+  Bloc? bloc;
 
   PageEntity({
     required this.route,

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '/commons/entities/disco.dart';
+
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_events.dart';
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_states.dart';
 
 class DettaglioDiscoBloc
     extends Bloc<DettaglioDiscoEvent, DettaglioDiscoState> {
-  DettaglioDiscoBloc() : super(DettaglioDiscoState.initial()) {
+  Disco disco;
+  DettaglioDiscoBloc({
+    required this.disco,
+  }) : super(DettaglioDiscoLoadingState()) {
     on<InitializeEvent>(_onInitialize);
     on<UpdateEvent>(_onUpdate);
     on<UpdateFieldEvent>(_onUpdateField);
@@ -18,16 +23,12 @@ class DettaglioDiscoBloc
     InitializeEvent event,
     Emitter<DettaglioDiscoState> emit,
   ) async {
-    emit(DettaglioDiscoLoadingState());
-
-    await Future.delayed(Duration.zero);
-
     emit(
       state.copyWith(
-        tipologia: event.disco.giri,
-        disco: event.disco,
+        tipologia: disco.giri,
+        disco: disco,
         lato: 'A',
-        artistaController: TextEditingController(text: event.disco.artista),
+        artistaController: TextEditingController(text: disco.artista),
         posizioneController: TextEditingController(text: event.disco.posizione),
         ordineController: TextEditingController(
           text: event.disco.ordine == 0 || event.disco.ordine == null

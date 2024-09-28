@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
+import '/commons/widgets/dropdown_field.dart';
 import '/commons/utils/assets_utils.dart';
 import '/commons/entities/disco.dart';
 
 import '/pages/home_page/bloc/home_blocs.dart';
 import '/pages/home_page/home_page_controller.dart';
+import '/pages/home_page/bloc/home_events.dart';
 
 /// Widget per l'appBar
 PreferredSizeWidget buildAppBar({
@@ -48,27 +50,50 @@ Widget buildInputRicerca({
 
   return Padding(
     padding: const EdgeInsets.all(16.0),
-    child: TextField(
-      controller: searchController,
-      style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
-      decoration: InputDecoration(
-        hintText: 'Cerca per album, artista, anno o brano',
-        hintStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6)),
-        prefixIcon:
-            Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-        ),
-      ),
-      onChanged: (value) => controller.gestisciFiltro(value, searchController),
+    child: ValueListenableBuilder<TextEditingValue>(
+      valueListenable: searchController,
+      builder: (context, value, child) {
+        return TextField(
+          controller: searchController,
+          style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+          decoration: InputDecoration(
+            hintText: 'Cerca per album, artista, anno o brano',
+            hintStyle: TextStyle(
+              color:
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+            ),
+            prefixIcon: Icon(
+              Icons.search,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            suffixIcon: value.text.isNotEmpty
+                ? IconButton(
+                    icon: Icon(
+                      Icons.clear,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      searchController.clear();
+                      controller.gestisciFiltro('', searchController);
+                    },
+                  )
+                : null,
+            filled: true,
+            fillColor: Theme.of(context).colorScheme.surface,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide:
+                  BorderSide(color: Theme.of(context).colorScheme.primary),
+            ),
+          ),
+          onChanged: (value) =>
+              controller.gestisciFiltro(value, searchController),
+        );
+      },
     ),
   );
 }
@@ -83,79 +108,71 @@ Widget buildBarraOrdinamento({
   return Padding(
     padding: const EdgeInsets.only(
       left: 16.0,
+      right: 16,
       top: 8.0,
       bottom: 8,
     ),
     child: Row(
       children: [
-        Text(
-          'Ordina per:',
-          style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onBackground,
+        // Label "Ordina per" e il DropdownField
+        Flexible(
+          child: Row(
+            children: [
+              Text(
+                'Ordina per:',
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
               ),
-        ),
-        const SizedBox(width: 16),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: DropdownButton<String>(
-            value: state.ordering,
-            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-            dropdownColor: Theme.of(context).colorScheme.surface,
-            underline: const SizedBox(),
-            items:
-                ['Artista', 'Titolo', 'Anno', 'Posizione'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (value) {
-              controller.ordinaDati(ordering: value!);
-            },
+              const Gap(16),
+              Flexible(
+                child: dropDownField(
+                  context: context,
+                  valore: state.ordering,
+                  elenco: ['Artista', 'Titolo', 'Anno', 'Posizione'],
+                  onChanged: (value) {
+                    controller.ordinaDati(ordering: value!);
+                  },
+                ),
+              ),
+            ],
           ),
         ),
         const Gap(15),
-        // Expanded(
-        //   child: IconButton(
-        //     onPressed: () {},
-        //     icon: Icon(
-        //       Icons.filter_list_outlined,
-        //       size: 40,
-        //     ),
-        //   ),
-        // ),
-        Expanded(
-          child: IconButton(
-            icon: Stack(
-              alignment: Alignment.center, // Posiziona il + al centro del disco
-              children: [
-                SizedBox(
-                  height: 50,
-                  child: Icon(
-                    Icons.album, // Icona del disco
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 40, // Dimensione maggiore per il disco
-                  ),
-                ),
-                SizedBox(
-                  height: 50,
-                  child: Icon(
-                    Icons.add,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onBackground, // Colore diverso per il +
-                    size:
-                        18, // Dimensione del + per farlo entrare nel buco del disco
-                  ),
-                ),
-              ],
-            ),
-            onPressed: () => controller.paginaDettaglio(),
+        IconButton(
+          onPressed: () => state.filtroStrutturatoAttivo
+              ? context.read<HomeBloc>().add(HomeInitDatiEvent())
+              : controller.paginaFiltro(),
+          icon: Icon(
+            state.filtroStrutturatoAttivo
+                ? Icons.filter_list_off_outlined
+                : Icons.filter_list_outlined,
+            size: 40,
           ),
+        ),
+        IconButton(
+          icon: Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                height: 50,
+                child: Icon(
+                  Icons.album,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 40,
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                child: Icon(
+                  Icons.add,
+                  color: Theme.of(context).colorScheme.onBackground,
+                  size: 18,
+                ),
+              ),
+            ],
+          ),
+          onPressed: () => controller.paginaDettaglioDisco(),
         ),
       ],
     ),
@@ -238,7 +255,7 @@ Widget discoItem({
         ),
       ),
       onTap: () {
-        controller.paginaDettaglio(arguments: disco.toJson());
+        controller.paginaDettaglioDisco(arguments: disco.toJson());
       },
     ),
   );

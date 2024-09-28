@@ -7,10 +7,12 @@ abstract class HomeEvent {
 class HomeInitDatiEvent extends HomeEvent {
   final List<Disco>? lista;
   final bool? filtroAttivo;
+  final bool? filtroStrutturatoAttivo;
   final String? ordering;
   const HomeInitDatiEvent({
     this.lista,
     this.filtroAttivo,
+    this.filtroStrutturatoAttivo,
     this.ordering,
   });
 }
@@ -18,10 +20,14 @@ class HomeInitDatiEvent extends HomeEvent {
 class HomeUpdateDatiEvent extends HomeEvent {
   final List<Disco>? lista;
   final bool? filtroAttivo;
+  final bool? filtroStrutturatoAttivo;
+  final Map<String, String>? filtroStrutturato;
   final String? ordering;
   const HomeUpdateDatiEvent({
     this.lista,
     this.filtroAttivo,
+    this.filtroStrutturatoAttivo,
+    this.filtroStrutturato,
     this.ordering,
   });
 }

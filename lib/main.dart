@@ -1,4 +1,5 @@
 import 'package:disco_teca/commons/widgets/loading_view.dart';
+import 'package:disco_teca/pages/home_page/bloc/home_blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,10 +25,13 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        ...AppPages.allBlocProviders(context),
-      ],
+    return
+        // MultiBlocProvider(
+        //   providers: [
+        //     ...AppPages.allBlocProviders(context),
+        //   ],
+        BlocProvider(
+      create: (_) => HomeBloc(),
       child: MaterialApp(
         title: 'MYW',
         theme: tema,
