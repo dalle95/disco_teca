@@ -21,6 +21,15 @@ class FiltroDischiController {
     listaDischi =
         List.from(listaDischi.where((element) => element.giri == giri));
 
+    listaDischi.sort(
+      (a, b) {
+        if (a.artista != null && b.artista != null) {
+          return a.artista!.compareTo(b.artista!);
+        }
+        return 1;
+      },
+    );
+
     final filtroStrutturato = {
       'giri': giri,
     };
@@ -50,6 +59,12 @@ class FiltroDischiController {
 
     listaDischi = List.from(
         listaDischi.where((element) => element.posizione == posizione));
+
+    listaDischi.sort(
+      (a, b) {
+        return a.ordine!.compareTo(b.ordine!);
+      },
+    );
 
     final filtroStrutturato = {
       'posizione': posizione,
