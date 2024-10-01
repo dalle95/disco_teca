@@ -1,22 +1,24 @@
-import 'package:disco_teca/commons/entities/disco.dart';
-import 'package:disco_teca/pages/dettaglio_disco/bloc/dettaglio_disco_events.dart';
-import 'package:disco_teca/pages/filtro_dischi/bloc/filtro_dischi_blocs.dart';
-import 'package:disco_teca/pages/filtro_dischi/bloc/filtro_dischi_events.dart';
-import 'package:disco_teca/pages/filtro_dischi/ui/filtro_dischi_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 
 import '/global.dart';
 
-import '/commons/routes/routes/names.dart';
+import '/commons/entities/disco.dart';
+import '/commons/routes/routes.dart';
 
+import '/pages/dettaglio_disco/bloc/dettaglio_disco_events.dart';
+import '/pages/filtro_dischi/bloc/filtro_dischi_blocs.dart';
+import '/pages/filtro_dischi/bloc/filtro_dischi_events.dart';
+import '/pages/filtro_dischi/ui/filtro_dischi_page.dart';
 import '/pages/auth/ui/auth_page.dart';
 import '/pages/auth/bloc/auth_blocs.dart';
 import '/pages/home_page/bloc/home_blocs.dart';
 import '/pages/home_page/ui/home_page.dart';
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_bloc.dart';
 import '/pages/dettaglio_disco/ui/dettaglio_disco_page.dart';
+import '/pages/profile/bloc/profile_blocs.dart';
+import '/pages/profile/ui/profile_page.dart';
 
 class AppPages {
   /// Lista di routes, pagine e bloc unite
@@ -41,6 +43,11 @@ class AppPages {
         route: AppRoutes.FILTRO,
         page: const FiltroDischiPage(),
         bloc: FiltroDischiBloc(),
+      ),
+      PageEntity(
+        route: AppRoutes.PROFILE,
+        page: const ProfilePage(),
+        bloc: ProfileBloc(),
       ),
     ];
   }

@@ -1,8 +1,9 @@
 import 'dart:ui';
 
-import 'package:disco_teca/commons/widgets/loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '/commons/widgets/loading_view.dart';
 
 import '/pages/auth/widgets/auth_widgets.dart';
 import '/pages/auth/bloc/auth_blocs.dart';

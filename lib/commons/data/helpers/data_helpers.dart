@@ -11,4 +11,9 @@ class DataHelpers {
         .toSet() // Rimuove i duplicati
         .toList(); // Converte di nuovo in una lista
   }
+
+  // Funzione per estrarre il numero dei dischi
+  int estraiNumeroDischi(List<Disco> listaDischi) {
+    return listaDischi.length;
+  }
 }

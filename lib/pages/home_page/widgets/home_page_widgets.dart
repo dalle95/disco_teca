@@ -34,7 +34,7 @@ PreferredSizeWidget buildAppBar({
             color: Theme.of(context).colorScheme.onBackground,
             size: 40,
           ),
-          onPressed: () => controller.profileDialog(),
+          onPressed: () => controller.paginaProfilo(),
         ),
       ),
     ],

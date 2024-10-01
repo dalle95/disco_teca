@@ -52,6 +52,21 @@ class StorageService {
     return listaClienti;
   }
 
+  Future<Map<String, dynamic>> estraiDatiUtente() async {
+    final userData = await getData(AppConstants.STORAGE_USER_DATA);
+
+    if (userData != null && userData is String && userData.isNotEmpty) {
+      try {
+        return jsonDecode(userData);
+      } catch (e) {
+        // Gestisci l'errore di parsing JSON qui, se necessario
+        throw FormatException('Errore durante la decodifica del JSON: $e');
+      }
+    }
+
+    return {};
+  }
+
   // Future<void> setBool(String key, String value) async {
   //   return await _prefs.write(key: key, value: value);
   // }

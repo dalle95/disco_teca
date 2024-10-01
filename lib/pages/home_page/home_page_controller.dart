@@ -7,7 +7,7 @@ import 'package:logger/logger.dart';
 import '/global.dart';
 
 import '/commons/entities/disco.dart';
-import '/commons/routes/routes/names.dart';
+import '/commons/routes/names.dart';
 import '/commons/widgets/dialog_standard.dart';
 
 import '/pages/auth/auth_controller.dart';
@@ -236,7 +236,7 @@ class HomePageController {
     );
   }
 
-  /// Apertura pagina Fitlro
+  /// Apertura pagina Filtro
   void paginaFiltro({Map<String, dynamic>? arguments}) {
     Navigator.of(context).pushNamed(
       AppRoutes.FILTRO,
@@ -244,21 +244,11 @@ class HomePageController {
     );
   }
 
-  /// Dialogo per effettuare il logout
-  void profileDialog() {
-    dialogStandardPopUp(
-      context: context,
-      title: 'Disconnetti',
-      content: 'Disconnettere l\'account?',
-      acceptFunction: () {
-        removeUserData();
-      },
-      deniedFunction: () {},
+  /// Apertura pagina Profilo
+  void paginaProfilo({Map<String, dynamic>? arguments}) {
+    Navigator.of(context).pushNamed(
+      AppRoutes.PROFILE,
+      arguments: arguments,
     );
-  }
-
-  // Funzione per effetturare il logout
-  Future<void> removeUserData() async {
-    AuthController(context: context).logout();
   }
 }

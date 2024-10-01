@@ -10,8 +10,8 @@ import '/global.dart';
 import '/commons/data/api/authentication_api.dart';
 import '/commons/utils/error_util.dart';
 import '/commons/widgets/flutter_toast.dart';
-import '/commons/routes/routes/names.dart';
 import '/commons/values/constant.dart';
+import '/commons/routes/names.dart';
 
 import '/pages/auth/bloc/auth_blocs.dart';
 import '/pages/auth/bloc/auth_events.dart';

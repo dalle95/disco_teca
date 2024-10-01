@@ -1,13 +1,14 @@
-import 'package:disco_teca/commons/widgets/loading_view.dart';
-import 'package:disco_teca/pages/home_page/bloc/home_blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '/global.dart';
 
-import '/commons/routes/routes/pages.dart';
+import '/commons/routes/pages.dart';
 import '/commons/values/tema.dart';
+import '/commons/widgets/loading_view.dart';
+
+import '/pages/home_page/bloc/home_blocs.dart';
 
 Future<void> main() async {
   // Assicurati che i binding di Flutter siano inizializzati
