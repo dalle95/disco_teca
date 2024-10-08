@@ -16,12 +16,22 @@ PreferredSizeWidget buildAppBar({
   );
 }
 
+class InfoItem {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  InfoItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+}
+
 Widget buildInfoSection({
   required BuildContext context,
   required String title,
-  required IconData icon,
-  required String label,
-  required String value,
+  required List<InfoItem> infoItems,
 }) {
   return Container(
     margin: const EdgeInsets.all(16),
@@ -47,28 +57,35 @@ Widget buildInfoSection({
               ),
         ),
         const SizedBox(height: 16),
-        Row(
-          children: [
-            Icon(
-              icon,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-              ),
-            ),
-            Text(
-              value,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+        Column(
+          children: infoItems.map((info) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                children: [
+                  Icon(
+                    info.icon,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-            ),
-          ],
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      info.label,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                    ),
+                  ),
+                  Text(
+                    info.value,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
         ),
       ],
     ),

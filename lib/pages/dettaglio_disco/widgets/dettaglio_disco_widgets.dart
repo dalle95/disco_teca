@@ -1,3 +1,4 @@
+import 'package:disco_teca/pages/dettaglio_disco/bloc/dettaglio_disco_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -109,6 +110,7 @@ Widget buildSelezioneDisco({required BuildContext context}) {
 Widget buildSezioneInformazioniDisco({required BuildContext context}) {
   final controller = DettaglioDiscoController(context: context);
   final state = context.read<DettaglioDiscoBloc>().state;
+
   return Column(
     children: [
       // Artista
@@ -130,13 +132,53 @@ Widget buildSezioneInformazioniDisco({required BuildContext context}) {
       ),
       const Gap(16),
 
-      // Posizione
-      TextField(
-        decoration: buildInputDecoration(context: context, label: 'Posizione'),
-        controller: state.posizioneController,
-        onChanged: (value) =>
-            controller.aggiornaValore(field: 'posizione', value: value),
+      // Selettore Modalità Inserimento Posizione
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Usa posizione esistente?',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          Switch(
+            value: state.isPosizionePresente,
+            onChanged: (value) => context.read<DettaglioDiscoBloc>().add(
+                  CambiaSetPosizioneEvent(),
+                ),
+          ),
+        ],
       ),
+      const Gap(16),
+
+      // Posizione (DropDown o TextField)
+      state.isPosizionePresente
+          ? DropdownButtonFormField<String>(
+              value: state.posizioneController.text.isNotEmpty
+                  ? state.posizioneController.text
+                  : null,
+              decoration:
+                  buildInputDecoration(context: context, label: 'Posizione'),
+              items: state.listaPosizioni
+                  .map<DropdownMenuItem<String>>((posizione) {
+                return DropdownMenuItem<String>(
+                  value: posizione,
+                  child: Text(posizione),
+                );
+              }).toList(),
+              onChanged: (String? value) {
+                if (value != null) {
+                  state.posizioneController.text = value;
+                  controller.aggiornaValore(field: 'posizione', value: value);
+                }
+              },
+            )
+          : TextField(
+              decoration: buildInputDecoration(
+                  context: context, label: 'Nuova Posizione'),
+              controller: state.posizioneController,
+              onChanged: (value) =>
+                  controller.aggiornaValore(field: 'posizione', value: value),
+            ),
       const Gap(16),
 
       // Ordine

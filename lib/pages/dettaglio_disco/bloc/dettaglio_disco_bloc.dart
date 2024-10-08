@@ -2,33 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/commons/entities/disco.dart';
+import '/commons/data/helpers/data_helpers.dart';
+import '/commons/service/storage_service.dart';
 
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_events.dart';
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_states.dart';
 
 class DettaglioDiscoBloc
     extends Bloc<DettaglioDiscoEvent, DettaglioDiscoState> {
-  Disco disco;
-  DettaglioDiscoBloc({
-    required this.disco,
-  }) : super(DettaglioDiscoLoadingState()) {
+  DettaglioDiscoBloc() : super(DettaglioDiscoLoadingState()) {
     on<InitializeEvent>(_onInitialize);
     on<UpdateEvent>(_onUpdate);
     on<UpdateFieldEvent>(_onUpdateField);
     on<MostraLatoEvent>(_onMostraLato);
     on<UpdateTipologiaEvent>(_onUpdateTipologia);
+    on<CambiaSetPosizioneEvent>(_onCambiaSetPosizione);
   }
 
   void _onInitialize(
     InitializeEvent event,
     Emitter<DettaglioDiscoState> emit,
   ) async {
+    final serviceStorage = await StorageService().init();
+
+    List<Disco> listaDischi = await serviceStorage.estraiListaDischi();
+
+    List<String> listaPosizioni =
+        DataHelpers().estraiListaPosizioniDischi(listaDischi);
+
     emit(
       state.copyWith(
-        tipologia: disco.giri,
-        disco: disco,
+        tipologia: event.disco.giri,
+        disco: event.disco,
         lato: 'A',
-        artistaController: TextEditingController(text: disco.artista),
+        artistaController: TextEditingController(text: event.disco.artista),
+        isPosizionePresente: event.disco.id != null ? true : false,
         posizioneController: TextEditingController(text: event.disco.posizione),
         ordineController: TextEditingController(
           text: event.disco.ordine == 0 || event.disco.ordine == null
@@ -57,6 +65,7 @@ class DettaglioDiscoBloc
         brano6BController: TextEditingController(text: event.disco.brano6B),
         brano7BController: TextEditingController(text: event.disco.brano7B),
         brano8BController: TextEditingController(text: event.disco.brano8B),
+        listaPosizioni: listaPosizioni,
       ),
     );
   }
@@ -150,5 +159,14 @@ class DettaglioDiscoBloc
 
   void _onMostraLato(MostraLatoEvent event, Emitter<DettaglioDiscoState> emit) {
     emit(state.copyWith(lato: event.lato));
+  }
+
+  void _onCambiaSetPosizione(
+    CambiaSetPosizioneEvent event,
+    Emitter<DettaglioDiscoState> emit,
+  ) {
+    emit(state.copyWith(
+      isPosizionePresente: !state.isPosizionePresente,
+    ));
   }
 }

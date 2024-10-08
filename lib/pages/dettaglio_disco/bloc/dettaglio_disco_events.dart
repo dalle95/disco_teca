@@ -34,3 +34,7 @@ class MostraLatoEvent extends DettaglioDiscoEvent {
   final String lato;
   MostraLatoEvent({required this.lato});
 }
+
+class CambiaSetPosizioneEvent extends DettaglioDiscoEvent {
+  CambiaSetPosizioneEvent();
+}

@@ -1,3 +1,4 @@
+import 'package:disco_teca/pages/filtro_dischi/bloc/filtro_dischi_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,57 +16,63 @@ class FiltroDischiPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FiltroDischiBloc, FiltroDischiState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: buildAppBar(
-            context: context,
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Titolo
-                Text(
-                  'Tipologia Disco',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 20),
-
-                // Selezione Giri
-                buildSelezioneDisco(
-                  context: context,
-                  onTap: (giri) =>
-                      FiltroDischiController(context: context).updateGiri(giri),
-                  tipologia: state.giri,
-                ),
-                const SizedBox(height: 20),
-
-                // Titolo Posizione
-                Text(
-                  'Posizione',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 20),
-
-                // Selezione Posizione (con DropDown)
-                dropDownField(
-                  context: context,
-                  valore: state.posizione,
-                  elenco: state.listaPosizioni,
-                  onChanged: (String? posizione) {
-                    // Gestisci il cambio della posizione
-                    FiltroDischiController(context: context)
-                        .updatePosizione(posizione!);
-                  },
-                ),
-              ],
+    return BlocProvider(
+      create: (_) => FiltroDischiBloc()
+        ..add(
+          FiltroDischiInitEvent(),
+        ),
+      child: BlocBuilder<FiltroDischiBloc, FiltroDischiState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: buildAppBar(
+              context: context,
             ),
-          ),
-        );
-      },
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Titolo
+                  Text(
+                    'Tipologia Disco',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Selezione Giri
+                  buildSelezioneDisco(
+                    context: context,
+                    onTap: (giri) => FiltroDischiController(context: context)
+                        .updateGiri(giri),
+                    tipologia: state.giri,
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Titolo Posizione
+                  Text(
+                    'Posizione',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Selezione Posizione (con DropDown)
+                  dropDownField(
+                    context: context,
+                    valore: state.posizione,
+                    elenco: state.listaPosizioni,
+                    onChanged: (String? posizione) {
+                      // Gestisci il cambio della posizione
+                      FiltroDischiController(context: context)
+                          .updatePosizione(posizione!);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -9,7 +9,6 @@ import '/commons/routes/routes.dart';
 
 import '/pages/dettaglio_disco/bloc/dettaglio_disco_events.dart';
 import '/pages/filtro_dischi/bloc/filtro_dischi_blocs.dart';
-import '/pages/filtro_dischi/bloc/filtro_dischi_events.dart';
 import '/pages/filtro_dischi/ui/filtro_dischi_page.dart';
 import '/pages/auth/ui/auth_page.dart';
 import '/pages/auth/bloc/auth_blocs.dart';
@@ -37,7 +36,7 @@ class AppPages {
       PageEntity(
         route: AppRoutes.DETTAGLIO_DISCO,
         page: const DettaglioDiscoPage(),
-        bloc: DettaglioDiscoBloc(disco: Disco.empty()),
+        bloc: DettaglioDiscoBloc(),
       ),
       PageEntity(
         route: AppRoutes.FILTRO,
@@ -67,10 +66,7 @@ class AppPages {
       if (isLoggedIn) {
         return HomePage();
       } else {
-        return BlocProvider(
-          create: (_) => AuthBloc(),
-          child: const AuthPage(),
-        );
+        return AuthPage();
       }
     }
 
@@ -80,11 +76,8 @@ class AppPages {
     if (result.isNotEmpty) {
       if (result.first.route == AppRoutes.DETTAGLIO_DISCO) {
         return BlocProvider(
-          create: (_) => DettaglioDiscoBloc(
-            disco: settings.arguments != null
-                ? Disco.fromJson(settings.arguments as Map<String, dynamic>)
-                : Disco.empty(),
-          )..add(
+          create: (_) => DettaglioDiscoBloc()
+            ..add(
               InitializeEvent(
                 disco: settings.arguments != null
                     ? Disco.fromJson(settings.arguments as Map<String, dynamic>)
@@ -93,33 +86,13 @@ class AppPages {
             ),
           child: result.first.page,
         );
-      }
-
-      if (result.first.route == AppRoutes.FILTRO) {
-        return BlocProvider(
-          create: (_) => FiltroDischiBloc()
-            ..add(
-              FiltroDischiInitEvent(),
-            ),
-          child: result.first.page,
-        );
-      }
-
-      if (result.first.route == AppRoutes.AUTHENTICATION) {
-        return BlocProvider(
-          create: (_) => AuthBloc(),
-          child: result.first.page,
-        );
       } else {
         return result.first.page;
       }
     }
 
     // Se nessuna route matcha, reindirizza alla pagina di autenticazione
-    return BlocProvider(
-      create: (_) => AuthBloc(),
-      child: const AuthPage(),
-    );
+    return const AuthPage();
   }
 }
 

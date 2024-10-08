@@ -1,7 +1,5 @@
-import 'package:disco_teca/commons/values/constant.dart';
 import 'package:disco_teca/global.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'profile_events.dart';
@@ -21,6 +19,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     // Recupero il numero dei dischi
     final listaDischi = await DiscoApi().estraiDati();
     final nDischi = DataHelpers().estraiNumeroDischi(listaDischi);
+    final statisticheUtente =
+        DataHelpers().calcolaStatisticheUtente(listaDischi);
 
     // Recupero la versione dell'applicazione
     final infoApp = await PackageInfo.fromPlatform();
@@ -34,6 +34,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       state.copyWith(
         email: userEmail,
         nDischi: nDischi,
+        nAlbum: statisticheUtente['album'],
+        nArtisti: statisticheUtente['artisti'],
+        nBrani: statisticheUtente['brani'],
         versioneApp: infoVersioneApp,
       ),
     );

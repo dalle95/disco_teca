@@ -73,14 +73,33 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildStatisticsSection(BuildContext context) {
-    final nDischi = ProfileController(context: context).estraiNDischi();
+    final state = context.read<ProfileBloc>().state;
 
     return buildInfoSection(
       context: context,
       title: 'Statistiche',
-      icon: Icons.album,
-      label: 'Dischi caricati',
-      value: nDischi,
+      infoItems: [
+        InfoItem(
+          icon: Icons.album,
+          label: 'Dischi',
+          value: state.nDischi.toString(),
+        ),
+        InfoItem(
+          icon: Icons.portrait_outlined,
+          label: 'Artisti',
+          value: state.nArtisti.toString(),
+        ),
+        InfoItem(
+          icon: Icons.all_inbox,
+          label: 'Albums',
+          value: state.nAlbum.toString(),
+        ),
+        InfoItem(
+          icon: Icons.star_outlined,
+          label: 'Brani',
+          value: state.nBrani.toString(),
+        ),
+      ],
     );
   }
 
@@ -90,9 +109,13 @@ class ProfilePage extends StatelessWidget {
     return buildInfoSection(
       context: context,
       title: 'Informazioni App',
-      icon: Icons.info_outline,
-      label: 'Versione',
-      value: versioneApp,
+      infoItems: [
+        InfoItem(
+          icon: Icons.info_outline,
+          label: 'Versione',
+          value: versioneApp,
+        ),
+      ],
     );
   }
 

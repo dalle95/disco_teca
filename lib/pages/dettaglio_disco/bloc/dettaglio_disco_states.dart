@@ -5,6 +5,7 @@ import '/commons/entities/disco.dart';
 class DettaglioDiscoState {
   final Disco disco;
   final TextEditingController artistaController;
+  final bool isPosizionePresente;
   final TextEditingController posizioneController;
   final TextEditingController ordineController;
   final TextEditingController titoloAlbumController;
@@ -28,10 +29,12 @@ class DettaglioDiscoState {
   final TextEditingController brano8BController;
   final String tipologia;
   final String lato;
+  final List<String> listaPosizioni;
 
   DettaglioDiscoState({
     required this.disco,
     required this.artistaController,
+    required this.isPosizionePresente,
     required this.posizioneController,
     required this.ordineController,
     required this.titoloAlbumController,
@@ -55,12 +58,14 @@ class DettaglioDiscoState {
     required this.brano8BController,
     required this.tipologia,
     required this.lato,
+    required this.listaPosizioni,
   });
 
   factory DettaglioDiscoState.initial() {
     return DettaglioDiscoState(
       disco: const Disco(),
       artistaController: TextEditingController(),
+      isPosizionePresente: false,
       posizioneController: TextEditingController(),
       ordineController: TextEditingController(),
       titoloAlbumController: TextEditingController(),
@@ -84,12 +89,14 @@ class DettaglioDiscoState {
       brano8BController: TextEditingController(),
       tipologia: '33',
       lato: 'A',
+      listaPosizioni: [],
     );
   }
 
   DettaglioDiscoState copyWith({
     Disco? disco,
     TextEditingController? artistaController,
+    bool? isPosizionePresente,
     TextEditingController? posizioneController,
     TextEditingController? ordineController,
     TextEditingController? titoloAlbumController,
@@ -113,10 +120,12 @@ class DettaglioDiscoState {
     TextEditingController? brano8BController,
     String? tipologia,
     String? lato,
+    List<String>? listaPosizioni,
   }) {
     return DettaglioDiscoState(
       disco: disco ?? this.disco,
       artistaController: artistaController ?? this.artistaController,
+      isPosizionePresente: isPosizionePresente ?? this.isPosizionePresente,
       posizioneController: posizioneController ?? this.posizioneController,
       ordineController: ordineController ?? this.ordineController,
       titoloAlbumController:
@@ -141,6 +150,7 @@ class DettaglioDiscoState {
       brano8BController: brano8BController ?? this.brano8BController,
       tipologia: tipologia ?? this.tipologia,
       lato: lato ?? this.lato,
+      listaPosizioni: listaPosizioni ?? this.listaPosizioni,
     );
   }
 }
@@ -150,6 +160,7 @@ class DettaglioDiscoLoadingState extends DettaglioDiscoState {
       : super(
           disco: const Disco(),
           artistaController: TextEditingController(text: "Loading..."),
+          isPosizionePresente: false,
           posizioneController: TextEditingController(text: "Loading..."),
           ordineController: TextEditingController(text: "Loading..."),
           titoloAlbumController: TextEditingController(text: "Loading..."),
@@ -173,5 +184,6 @@ class DettaglioDiscoLoadingState extends DettaglioDiscoState {
           brano8BController: TextEditingController(text: "Loading..."),
           tipologia: '33',
           lato: 'A',
+          listaPosizioni: [],
         );
 }
