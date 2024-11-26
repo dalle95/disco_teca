@@ -1,4 +1,4 @@
-# disco_teca
+# app_disco_teca
 
 A new Flutter project.
 

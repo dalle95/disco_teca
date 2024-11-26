@@ -1,4 +1,4 @@
-name: disco_teca
+name: app_disco_teca
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 2.0.0+1
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -30,17 +30,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+
   flutter_bloc:
-  intl: ^0.18.1
+  dartz:
+  dio:
   logger:
-  gap:
-
-  flutter_secure_storage: ^9.2.2
+  get_it:
+  flutter_secure_storage:
   google_fonts: ^5.1.0
-  fluttertoast: ^8.2.1
+  open_filex:
 
-  package_info_plus: ^4.2.0
+  package_info_plus:
 
   # Firebase
   firebase_core: ^2.27.0
@@ -51,17 +56,10 @@ dependencies:
   firebase_auth: ^4.17.4
   cloud_firestore: ^4.15.4
 
-  flutter_localizations:
-    sdk: flutter
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons:
 
 flutter_icons:
   android: true
@@ -88,11 +86,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - assets/icons/
+    - assets/vectors/
     - assets/gifs/
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

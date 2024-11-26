@@ -1,80 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
-import '/global.dart';
+import '/core/configs/theme/app_theme.dart';
+import 'presentation/splash/bloc/spash/splash_cubit.dart';
+import '/service_locator.dart';
 
-import '/commons/routes/pages.dart';
-import '/commons/values/tema.dart';
-import '/commons/widgets/loading_view.dart';
+import '/presentation/splash/pages/splash.dart';
+import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
+import '/presentation/home/bloc/ordine_dischi_cubit.dart';
+import '/presentation/home/bloc/search_cubit.dart';
+import '/presentation/filtro_dischi/bloc/giri_cubit.dart';
+import '/presentation/filtro_dischi/bloc/posizione_cubit.dart';
 
-import '/pages/home_page/bloc/home_blocs.dart';
-
-Future<void> main() async {
-  // Assicurati che i binding di Flutter siano inizializzati
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Global.init();
-
-  runApp(
-    const App(),
-  );
+  await setupServiceLocator();
+  runApp(const MyApp());
 }
 
-class App extends StatelessWidget {
-  const App({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return
-        // MultiBlocProvider(
-        //   providers: [
-        //     ...AppPages.allBlocProviders(context),
-        //   ],
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    return MultiBlocProvider(
+      providers: [
         BlocProvider(
-      create: (_) => HomeBloc(),
+          create: (context) => SplashCubit()..appStarted(),
+        ),
+        BlocProvider(create: (_) => DischiCubit()),
+        BlocProvider(create: (_) => OrdineDischiCubit()),
+        BlocProvider(create: (_) => SearchCubit()),
+        BlocProvider(create: (_) => PosizioneCubit()),
+        BlocProvider(create: (_) => GiriCubit()),
+      ],
       child: MaterialApp(
-        title: 'MYW',
-        theme: tema,
-        supportedLocales: const [
-          Locale('it'),
-        ],
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        onGenerateRoute: (settings) {
-          return MaterialPageRoute(
-            builder: (context) => FutureBuilder<Widget>(
-              future: AppPages.generateRouteSettings(settings),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // Mostra un indicatore di caricamento mentre attendi il risultato
-                  return Scaffold(
-                    body: buildLoadingView(context: context),
-                  );
-                } else if (snapshot.hasError) {
-                  // Gestisci eventuali errori
-                  return Scaffold(
-                    body: Center(
-                      child: Text('Errore: ${snapshot.error}'),
-                    ),
-                  );
-                } else {
-                  // Quando i dati sono disponibili, costruisci il widget desiderato
-                  return snapshot.data ??
-                      const Scaffold(
-                        body: Center(
-                          child: Text('Errore: Nessun dato disponibile'),
-                        ),
-                      );
-                }
-              },
-            ),
-            settings: settings,
-          );
-        },
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.appTheme,
+        home: const SplashPage(),
       ),
     );
   }

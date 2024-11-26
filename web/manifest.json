@@ -1,6 +1,6 @@
 {
-    "name": "disco_teca",
-    "short_name": "disco_teca",
+    "name": "app_disco_teca",
+    "short_name": "app_disco_teca",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
