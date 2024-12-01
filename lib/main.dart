@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/core/configs/theme/app_theme.dart';
-import 'presentation/splash/bloc/spash/splash_cubit.dart';
+import '/presentation/splash/bloc/splash_cubit.dart';
 import '/service_locator.dart';
 
 import '/presentation/splash/pages/splash.dart';
