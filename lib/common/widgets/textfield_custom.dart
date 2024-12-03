@@ -32,6 +32,20 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant TextFieldCustom oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      controller.text = widget.value ?? '';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: controller,

@@ -107,7 +107,7 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
   }
 
   void updateBrano1B(String value) {
-    logger.d('DettaglioDiscoCubit | Funzione: updateGiri');
+    logger.d('DettaglioDiscoCubit | Funzione: updateBrano1B');
     emit(state.copyWith(brano1B: value));
   }
 

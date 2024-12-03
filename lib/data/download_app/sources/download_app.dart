@@ -81,6 +81,13 @@ class DownloadAppApiServiceImpl extends DownloadAppService {
     logger.d("DownloadAppApiServiceImpl | Funzione: getNuovaVersioneApp");
 
     try {
+      // Impostazione modalità di fetching dei dati (1 secondo di timeout e aggiornamento ogni 30 minuti)
+      await _firebaseRemoteConfig.setConfigSettings(
+        RemoteConfigSettings(
+          fetchTimeout: const Duration(seconds: 1),
+          minimumFetchInterval: const Duration(minutes: 30),
+        ),
+      );
       // Sincronizza i dati da Remote Config
       await _firebaseRemoteConfig.fetchAndActivate();
 
