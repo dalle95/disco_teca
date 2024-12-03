@@ -1,10 +1,12 @@
-import 'package:app_disco_teca/presentation/home/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/common/widgets/background/background_view.dart';
 import '/common/helper/navigation/app_navigation.dart';
 
+import '/core/configs/assets/app_icons.dart';
+import '/core/configs/assets/app_images.dart';
+
+import '/presentation/home/pages/home.dart';
 import '/presentation/auth/pages/signin.dart';
 import '/presentation/splash/bloc/splash_cubit.dart';
 import '/presentation/splash/bloc/splash_state.dart';
@@ -30,7 +32,38 @@ class SplashPage extends StatelessWidget {
             AppNavigator.pushReplacement(context, FileDownloadPage());
           }
         },
-        child: const BackGroundView(),
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                AppImages.splashBackground,
+              ),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 250,
+                width: double.infinity,
+                child: Image.asset(
+                  AppIcons.logo,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                child: Text(
+                  'DiscoTeca',
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

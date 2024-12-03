@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/core/configs/assets/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,7 +15,7 @@ class FileDownloadPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Download Nuova Versione App")),
+      //appBar: AppBar(title: const Text("Download Nuova Versione App")),
       body: BlocProvider(
         create: (_) => DownloadCubit(),
         child: BlocConsumer<DownloadCubit, DownloadState>(
@@ -39,15 +40,37 @@ class FileDownloadPage extends StatelessWidget {
               );
             } else if (state is DownloadSuccess) {
               return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      AppImages.splashBackground,
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 alignment: Alignment.center,
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () =>
-                      AppNavigator.pushAndRemove(context, HomePage()),
-                  child: const Text(
-                    "Homepage",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      width: double.infinity,
+                      child: Text(
+                        'Qualcosa non è andato come doveva...\nMa non ti preoccupare ci riproveremo!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 25),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () =>
+                          AppNavigator.pushAndRemove(context, HomePage()),
+                      child: const Text(
+                        "Vai in homepage",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
                 ),
               );
             } else if (state is DownloadFailure) {
@@ -55,6 +78,14 @@ class FileDownloadPage extends StatelessWidget {
             }
 
             return Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    AppImages.splashBackground,
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

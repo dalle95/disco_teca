@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/core/configs/assets/app_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -9,12 +10,17 @@ import '/presentation/auth/pages/signin.dart';
 Widget buildLogo({required BuildContext context}) {
   return Column(
     children: [
-      Icon(
-        Icons.album,
-        size: 100,
-        color: Theme.of(context).primaryColor,
+      SizedBox(
+        height: 150,
+        width: double.infinity,
+        child: Image.asset(
+          AppIcons.logo,
+          fit: BoxFit.contain,
+        ),
       ),
-      const SizedBox(height: 24),
+      SizedBox(
+        height: 24,
+      ),
       Text(
         'DiscoTeca',
         style: Theme.of(context).textTheme.displayLarge?.copyWith(
