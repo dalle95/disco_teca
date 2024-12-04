@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -5,6 +7,7 @@ import '/service_locator.dart';
 
 import '/common/widgets/selezione_disco.dart';
 import '/common/widgets/textfield_custom.dart';
+import '/common/widgets/responsive.dart';
 
 import '/domain/disco/entities/disco.dart';
 import '/domain/disco/usescases/elimina_disco.dart';
@@ -27,6 +30,8 @@ class DettaglioDiscoAppBar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = Responsive.isMobile(context);
+
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: AppBar(
@@ -48,8 +53,9 @@ class DettaglioDiscoAppBar extends StatelessWidget
                           ? StatoAggiornamentoLista.aggiunta
                           : StatoAggiornamentoLista.modifica,
                     );
-
-                Navigator.of(context).pop();
+                if (isMobile) {
+                  Navigator.of(context).pop();
+                }
               }
             },
             icon: CircleAvatar(
@@ -75,7 +81,9 @@ class DettaglioDiscoAppBar extends StatelessWidget
                         tipologia: StatoAggiornamentoLista.eliminazione,
                       );
 
-                  Navigator.of(context).pop();
+                  if (Platform.isAndroid || Platform.isIOS) {
+                    Navigator.of(context).pop();
+                  }
                 }
               },
               icon: CircleAvatar(
@@ -171,8 +179,12 @@ class SezioneInformazioniDisco extends StatelessWidget {
                             }
                             if (state is ListaPosizioniLoaded) {
                               return DropdownButtonFormField<String>(
-                                style: const TextStyle(
-                                    fontStyle: FontStyle.normal),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                ),
                                 value: context
                                     .read<DettaglioDiscoCubit>()
                                     .state

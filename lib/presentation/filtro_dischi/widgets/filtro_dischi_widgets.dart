@@ -65,7 +65,10 @@ class SezionePosizione extends StatelessWidget {
                 return BlocBuilder<PosizioneCubit, String?>(
                   builder: (context, posizione) {
                     return DropdownButtonFormField<String>(
-                      style: const TextStyle(fontStyle: FontStyle.normal),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
                       value: posizione,
                       decoration: const InputDecoration(labelText: 'Posizione'),
                       items: state.lista.map<DropdownMenuItem<String>>(

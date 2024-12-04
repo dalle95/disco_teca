@@ -6,6 +6,7 @@ import '/common/helper/navigation/app_navigation.dart';
 import '/common/helper/assets/assets_utils.dart';
 import '/common/widgets/loading_view.dart';
 import '/common/widgets/textfield_custom.dart';
+import '/common/widgets/responsive.dart';
 
 import '/core/configs/assets/app_icons.dart';
 
@@ -20,15 +21,55 @@ import '/presentation/home/bloc/search_cubit.dart';
 import '/presentation/filtro_dischi/bloc/giri_cubit.dart';
 import '/presentation/filtro_dischi/bloc/posizione_cubit.dart';
 import '/presentation/filtro_dischi/pages/filtro_dischi_page.dart';
+import '/presentation/home/bloc/dettaglio_disco_desktop_cubit.dart';
 
 /// Widget per l'appBar
-PreferredSizeWidget buildAppBar({
+PreferredSizeWidget buildMobileAppBar({
   required BuildContext context,
 }) {
   return AppBar(
     title: Text(
       'DiscoTeca',
       style: Theme.of(context).textTheme.displayLarge?.copyWith(),
+    ),
+    actions: [
+      Container(
+        margin: const EdgeInsets.only(right: 16),
+        child: IconButton(
+          icon: Icon(
+            Icons.account_circle_rounded,
+            color: Theme.of(context).colorScheme.onBackground,
+            size: 40,
+          ),
+          onPressed: () => AppNavigator.push(context, const ProfilePage()),
+        ),
+      ),
+    ],
+  );
+}
+
+PreferredSizeWidget buildDesktopAppBar({
+  required BuildContext context,
+}) {
+  return AppBar(
+    title: Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
+              'DiscoTeca',
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(),
+            ),
+          ),
+          SizedBox(
+            width: 450,
+            height: 80,
+            child: InputRicerca(),
+          ),
+          Spacer(),
+        ],
+      ),
     ),
     actions: [
       Container(
@@ -66,6 +107,7 @@ class InputRicerca extends StatelessWidget {
           context.read<SearchCubit>().updateRicerca('');
           String ordine = context.read<OrdineDischiCubit>().state;
           context.read<DischiCubit>().getDischi(ordine: ordine);
+          context.read<DettaglioDiscoDesktopCubit>().setNessunDisco();
         },
         onChanged: (value) {
           if (value != '') {
@@ -108,7 +150,7 @@ class BarraOrdinamento extends StatelessWidget {
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(width: 10),
                 Flexible(
                   child: BlocBuilder<OrdineDischiCubit, String>(
                     builder: (context, criterio) {
@@ -207,6 +249,162 @@ class BarraOrdinamento extends StatelessWidget {
   }
 }
 
+class BarraOrdinamentoDesktop extends StatelessWidget {
+  const BarraOrdinamentoDesktop({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    bool isMobile = Responsive.isMobile(context);
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 16.0,
+        right: 16,
+        top: 8.0,
+        bottom: 8,
+      ),
+      child: Row(
+        children: [
+          // Label "Ordina per" e il DropdownField
+          Flexible(
+            flex: 1,
+            child: Row(
+              children: [
+                Text(
+                  'Ordina per:',
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
+                ),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: BlocBuilder<OrdineDischiCubit, String>(
+                    builder: (context, criterio) {
+                      return dropDownField(
+                        context: context,
+                        valore: criterio,
+                        elenco: ['Artista', 'Titolo', 'Anno', 'Posizione'],
+                        onChanged: (value) {
+                          context
+                              .read<OrdineDischiCubit>()
+                              .cambiaCriterio(value!);
+                          context.read<DischiCubit>().ordinaDischi(value);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Spacer(),
+          Flexible(
+            flex: 2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    context.read<DischiCubit>().getDischi();
+                    context.read<DettaglioDiscoDesktopCubit>().setNessunDisco();
+                  },
+                  icon: Icon(
+                    Icons.refresh,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 40,
+                  ),
+                ),
+                BlocBuilder<PosizioneCubit, String?>(
+                  builder: (context, posizione) {
+                    return BlocBuilder<GiriCubit, String?>(
+                      builder: (context, giri) {
+                        return IconButton(
+                          onPressed: () {
+                            if (giri == null && posizione == null) {
+                              AppNavigator.push(
+                                context,
+                                FiltroDischiPage(),
+                              );
+                            } else {
+                              context
+                                  .read<GiriCubit>()
+                                  .setGiri(context: context);
+                              context
+                                  .read<PosizioneCubit>()
+                                  .setPosizione(context: context);
+                            }
+                          },
+                          icon: Icon(
+                            (giri == null && posizione == null)
+                                ? Icons.filter_list_outlined
+                                : Icons.filter_list_off_outlined,
+                            size: 40,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                BlocBuilder<PosizioneCubit, String?>(
+                  builder: (context, posizione) {
+                    return BlocBuilder<GiriCubit, String?>(
+                      builder: (context, giri) {
+                        return IconButton(
+                          icon: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                child: Icon(
+                                  Icons.album,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 40,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 50,
+                                child: Icon(
+                                  Icons.add,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                  size: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                          onPressed: () async {
+                            if (isMobile) {
+                              DiscoEntity disco = DiscoEntity.empty().copyWith(
+                                tipologia: giri,
+                                posizione: posizione,
+                              );
+
+                              AppNavigator.push(
+                                context,
+                                DettaglioDiscoPage(disco: disco),
+                              );
+                            } else {
+                              context
+                                  .read<DettaglioDiscoDesktopCubit>()
+                                  .setNuovoDisco();
+                            }
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ElencoDischi extends StatelessWidget {
   const ElencoDischi({
     super.key,
@@ -288,11 +486,75 @@ class ElencoDischi extends StatelessWidget {
   }
 }
 
+class ElencoDischiDesktop extends StatelessWidget {
+  const ElencoDischiDesktop({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (layoutContext, size) {
+        return BlocBuilder<DischiCubit, DischiState>(
+          builder: (context, state) {
+            if (state is DischiLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state is DischiLoaded) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: size.biggest.height,
+                      child: ListView.builder(
+                        itemCount: state.dischi.length,
+                        itemBuilder: (context, index) {
+                          final disco = state.dischi[index];
+                          return discoItem(context: context, disco: disco);
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child:
+                        BlocBuilder<DettaglioDiscoDesktopCubit, DiscoEntity?>(
+                      builder: (context, disco) {
+                        if (disco == null) {
+                          return Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Seleziona un disco per visualizzare i dettagli",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          );
+                        }
+                        return Container(
+                          padding: EdgeInsets.only(right: 8),
+                          child: DettaglioDiscoPage(
+                            disco: disco,
+                            key: ValueKey(disco.id),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }
+            return const Center(child: Text("Errore nel caricamento"));
+          },
+        );
+      },
+    );
+  }
+}
+
 /// Widget per definire l'item del disco nell'elenco
 Widget discoItem({
   required BuildContext context,
   required dynamic disco,
 }) {
+  bool isMobile = Responsive.isMobile(context);
   return Card(
     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     color: Theme.of(context).colorScheme.surface,
@@ -302,7 +564,9 @@ Widget discoItem({
     elevation: 4,
     child: InkWell(
       borderRadius: BorderRadius.circular(15),
-      onTap: () => AppNavigator.push(context, DettaglioDiscoPage(disco: disco)),
+      onTap: () => isMobile
+          ? AppNavigator.push(context, DettaglioDiscoPage(disco: disco))
+          : context.read<DettaglioDiscoDesktopCubit>().setDisco(disco),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListTile(

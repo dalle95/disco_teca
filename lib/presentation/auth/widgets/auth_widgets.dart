@@ -1,8 +1,9 @@
-import 'package:app_disco_teca/core/configs/assets/app_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '/common/helper/navigation/app_navigation.dart';
+
+import '/core/configs/assets/app_icons.dart';
 
 import '../pages/register.dart';
 import '/presentation/auth/pages/signin.dart';

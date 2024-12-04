@@ -1,10 +1,14 @@
-import 'package:app_disco_teca/domain/download_app/usescases/nuova_versione_app.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 
 import '/service_locator.dart';
 
 import '/domain/auth/usecases/is_logged_in.dart';
+import '/domain/download_app/usescases/nuova_versione_app.dart';
+
 import '/presentation/splash/bloc/splash_state.dart';
 
 class SplashCubit extends Cubit<SplashState> {
@@ -23,21 +27,25 @@ class SplashCubit extends Cubit<SplashState> {
     var isLoggedIn = await sl<IsLoggedInUseCase>().call();
 
     if (isLoggedIn) {
-      var presenzaNuovaVersioneApp =
-          await sl<GetNuovaVersioneAppUseCase>().call();
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+        var presenzaNuovaVersioneApp =
+            await sl<GetNuovaVersioneAppUseCase>().call();
 
-      presenzaNuovaVersioneApp.fold(
-        (l) {},
-        (r) {
-          logger.d('Nuova app presente: ${r ? 'Si' : 'No'}');
+        presenzaNuovaVersioneApp.fold(
+          (l) {},
+          (r) {
+            logger.d('Nuova app presente: ${r ? 'Si' : 'No'}');
 
-          if (r) {
-            emit(DownloadNuovaVersioneApp());
-          } else {
-            emit(Authenticated());
-          }
-        },
-      );
+            if (r) {
+              emit(DownloadNuovaVersioneApp());
+            } else {
+              emit(Authenticated());
+            }
+          },
+        );
+      } else {
+        emit(Authenticated());
+      }
     } else {
       emit(UnAuthenticated());
     }

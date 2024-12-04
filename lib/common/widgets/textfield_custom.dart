@@ -28,6 +28,9 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
   @override
   void initState() {
     controller = TextEditingController(text: widget.value);
+    controller.selection = TextSelection.fromPosition(
+      TextPosition(offset: controller.text.length),
+    );
     super.initState();
   }
 
@@ -42,6 +45,9 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
       controller.text = widget.value ?? '';
+      controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: controller.text.length),
+      );
     }
   }
 
