@@ -375,12 +375,11 @@ class BarraOrdinamentoDesktop extends StatelessWidget {
                             ],
                           ),
                           onPressed: () async {
+                            DiscoEntity disco = DiscoEntity.empty().copyWith(
+                              tipologia: giri,
+                              posizione: posizione,
+                            );
                             if (isMobile) {
-                              DiscoEntity disco = DiscoEntity.empty().copyWith(
-                                tipologia: giri,
-                                posizione: posizione,
-                              );
-
                               AppNavigator.push(
                                 context,
                                 DettaglioDiscoPage(disco: disco),
@@ -388,7 +387,7 @@ class BarraOrdinamentoDesktop extends StatelessWidget {
                             } else {
                               context
                                   .read<DettaglioDiscoDesktopCubit>()
-                                  .setNuovoDisco();
+                                  .setDisco(disco);
                             }
                           },
                         );
