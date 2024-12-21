@@ -1,4 +1,3 @@
-import 'package:app_disco_teca/common/widgets/dialog_standard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +6,7 @@ import '/service_locator.dart';
 
 import '/common/widgets/loading_view.dart';
 import '/common/helper/navigation/app_navigation.dart';
+import '/common/widgets/dialog_standard.dart';
 
 import '/presentation/profile/bloc/app_version_cubit.dart';
 import '/presentation/profile/bloc/statistiche_cubit/statistiche_cubit.dart';

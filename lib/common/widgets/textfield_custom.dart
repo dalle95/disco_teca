@@ -7,6 +7,7 @@ class TextFieldCustom extends StatefulWidget {
   final String? value;
   final Function(String)? onChanged;
   final Function()? onPressed;
+  final TextInputType? keyboardType;
 
   const TextFieldCustom({
     this.hintText,
@@ -15,6 +16,7 @@ class TextFieldCustom extends StatefulWidget {
     this.value,
     this.onChanged,
     this.onPressed,
+    this.keyboardType,
     super.key,
   });
 
@@ -57,6 +59,7 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
       valueListenable: controller,
       builder: (context, value, child) {
         return TextField(
+          keyboardType: widget.keyboardType,
           controller: controller,
           decoration: InputDecoration(
             labelText: widget.labelText,

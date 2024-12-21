@@ -130,45 +130,46 @@ class SigninPage extends StatelessWidget {
     BuildContext context,
   ) {
     return SafeArea(
-      minimum: EdgeInsets.only(top: 30, left: 20, right: 20),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            buildLogo(context: context),
-            const SizedBox(
-              height: 30,
-            ),
-            buildForm(
-              context: context,
-              emailController: _emailController,
-              passwordController: _passwordController,
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) {
-                return buildPulsante(
-                  context: context,
-                  lable: state.isLoading ? 'Caricamento...' : 'Accedi',
-                  onPress: state.isLoading
-                      ? null
-                      : () {
-                          context.read<AuthCubit>().signIn(
-                                _emailController.text,
-                                _passwordController.text,
-                              );
-                        },
-                );
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            buildRegisterText(context),
-          ],
+      minimum: EdgeInsets.only(left: 20, right: 20),
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              buildLogo(context: context),
+              const SizedBox(
+                height: 30,
+              ),
+              buildForm(
+                context: context,
+                emailController: _emailController,
+                passwordController: _passwordController,
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  return buildPulsante(
+                    context: context,
+                    lable: state.isLoading ? 'Caricamento...' : 'Accedi',
+                    onPress: state.isLoading
+                        ? null
+                        : () {
+                            context.read<AuthCubit>().signIn(
+                                  _emailController.text,
+                                  _passwordController.text,
+                                );
+                          },
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              buildRegisterText(context),
+            ],
+          ),
         ),
       ),
     );

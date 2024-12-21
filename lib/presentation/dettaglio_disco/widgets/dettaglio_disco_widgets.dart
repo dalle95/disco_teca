@@ -30,7 +30,7 @@ class DettaglioDiscoAppBar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    bool isMobile = Responsive.isMobile(context);
+    // bool isMobile = Responsive.isMobile(context);
 
     return Padding(
       padding: const EdgeInsets.only(right: 8),
@@ -39,24 +39,24 @@ class DettaglioDiscoAppBar extends StatelessWidget
         actions: [
           IconButton(
             onPressed: () async {
-              DiscoEntity disco = DiscoEntity.copyFrom(
-                  context.read<DettaglioDiscoCubit>().state);
+              // DiscoEntity disco = DiscoEntity.copyFrom(
+              //     context.read<DettaglioDiscoCubit>().state);
               await context.read<DettaglioDiscoCubit>().salvaDati(context);
 
-              if (context.mounted) {
-                DiscoEntity discoAggiornato =
-                    context.read<DettaglioDiscoCubit>().state;
+              // if (context.mounted) {
+              // DiscoEntity discoAggiornato =
+              //     context.read<DettaglioDiscoCubit>().state;
 
-                context.read<DischiCubit>().aggiornaLista(
-                      disco: discoAggiornato,
-                      tipologia: disco.id == null
-                          ? StatoAggiornamentoLista.aggiunta
-                          : StatoAggiornamentoLista.modifica,
-                    );
-                if (isMobile) {
-                  Navigator.of(context).pop();
-                }
-              }
+              // context.read<DischiCubit>().aggiornaLista(
+              //       disco: discoAggiornato,
+              //       tipologia: disco.id == null
+              //           ? StatoAggiornamentoLista.aggiunta
+              //           : StatoAggiornamentoLista.modifica,
+              //     );
+              // if (isMobile) {
+              //   Navigator.of(context).pop();
+              // }
+              // }
             },
             icon: CircleAvatar(
               radius: 20,
@@ -135,7 +135,7 @@ class SezioneInformazioniDisco extends StatelessWidget {
           // Artista
           TextFieldCustom(
             labelText: 'Artista',
-            value: disco.artista,
+            value: disco.artista ?? '',
             onChanged: (value) =>
                 context.read<DettaglioDiscoCubit>().updateArtista(value),
           ),
@@ -144,7 +144,7 @@ class SezioneInformazioniDisco extends StatelessWidget {
           // Titolo Album
           TextFieldCustom(
             labelText: 'Titolo Album',
-            value: disco.titoloAlbum,
+            value: disco.titoloAlbum ?? '',
             onChanged: (value) =>
                 context.read<DettaglioDiscoCubit>().updateTitolo(value),
           ),
@@ -214,7 +214,7 @@ class SezioneInformazioniDisco extends StatelessWidget {
                         )
                       : TextFieldCustom(
                           labelText: 'Posizione',
-                          value: disco.posizione,
+                          value: disco.posizione ?? '',
                           onChanged: (value) => context
                               .read<DettaglioDiscoCubit>()
                               .updatePosizione(value),
@@ -228,7 +228,10 @@ class SezioneInformazioniDisco extends StatelessWidget {
           // Ordine
           TextFieldCustom(
             labelText: 'Ordine',
-            value: disco.ordine.toString(),
+            keyboardType: TextInputType.number,
+            value: disco.ordine == 0 || disco.ordine == null
+                ? ''
+                : disco.ordine.toString(),
             onChanged: (value) =>
                 context.read<DettaglioDiscoCubit>().updateOrdine(value),
           ),
@@ -237,7 +240,8 @@ class SezioneInformazioniDisco extends StatelessWidget {
           // Anno
           TextFieldCustom(
             labelText: 'Anno',
-            value: disco.anno,
+            keyboardType: TextInputType.number,
+            value: disco.anno ?? '',
             onChanged: (value) =>
                 context.read<DettaglioDiscoCubit>().updateAnno(value),
           ),
@@ -246,7 +250,14 @@ class SezioneInformazioniDisco extends StatelessWidget {
           // Valore
           TextFieldCustom(
             labelText: 'Valore',
-            value: disco.valore.toString(),
+            keyboardType: TextInputType.number,
+            value: (disco.valore == 0 ||
+                    disco.valore == 0.0 ||
+                    disco.valore == null)
+                ? ''
+                : disco.valore! % 1 == 0
+                    ? disco.valore!.toInt().toString()
+                    : disco.valore.toString(),
             onChanged: (value) =>
                 context.read<DettaglioDiscoCubit>().updateValore(value),
           ),

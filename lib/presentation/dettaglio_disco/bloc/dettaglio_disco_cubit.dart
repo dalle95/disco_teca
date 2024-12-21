@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/common/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
@@ -7,6 +8,7 @@ import '/service_locator.dart';
 import '/domain/disco/entities/disco.dart';
 import '/domain/disco/usescases/salva_disco.dart';
 
+import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/ui_state/ui_state_cubit.dart';
 
 class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
@@ -18,17 +20,66 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
   Future<void> salvaDati(BuildContext context) async {
     logger.d('DettaglioDiscoCubit | Funzione: salvaDati');
 
-    var data = await sl<SalvaDiscoUseCase>().call(params: state);
-    data.fold(
-      (error) {
-        logger.d(error);
-        context.read<UIStateCubit>().setError('Salvataggio fallito: $error');
-      },
-      (data) async {
-        context.read<UIStateCubit>().setSuccess();
-        emit(data);
-      },
-    );
+    DiscoEntity disco = DiscoEntity.copyFrom(state);
+
+    // Validation checks
+    List<String> missingFields = [];
+    if (state.giri == null || state.giri!.isEmpty) {
+      missingFields.add('Giri');
+    }
+    if (state.artista == null || state.artista!.isEmpty) {
+      missingFields.add('Artista');
+    }
+    if (state.titoloAlbum == null || state.titoloAlbum!.isEmpty) {
+      missingFields.add('Titolo Album');
+    }
+    if (state.posizione == null || state.posizione!.isEmpty) {
+      missingFields.add('Posizione');
+    }
+    if (state.ordine == null) {
+      missingFields.add('Ordine');
+    }
+    if (state.anno == null || state.anno!.isEmpty) {
+      missingFields.add('Anno');
+    }
+    if (state.valore == null) {
+      missingFields.add('Valore');
+    }
+
+    if (missingFields.isNotEmpty) {
+      context.read<UIStateCubit>().setError(
+          'I seguenti campi non possono essere vuoti: ${missingFields.join(', ')}');
+      return;
+    }
+    if (missingFields.isEmpty) {
+      var data = await sl<SalvaDiscoUseCase>().call(params: state);
+      data.fold(
+        (error) {
+          logger.d(error);
+          context.read<UIStateCubit>().setError('Salvataggio fallito: $error');
+        },
+        (data) async {
+          DiscoEntity discoAggiornato = data;
+
+          logger.d(discoAggiornato.toJson());
+
+          context.read<DischiCubit>().aggiornaLista(
+                disco: discoAggiornato,
+                tipologia: disco.id == null
+                    ? StatoAggiornamentoLista.aggiunta
+                    : StatoAggiornamentoLista.modifica,
+              );
+
+          context.read<UIStateCubit>().setSuccess();
+
+          bool isMobile = Responsive.isMobile(context);
+          if (isMobile) {
+            Navigator.of(context).pop();
+          }
+          emit(discoAggiornato);
+        },
+      );
+    }
   }
 
   void updateGiri(String value) {
@@ -63,7 +114,26 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
 
   void updateValore(String value) {
     logger.d('DettaglioDiscoCubit | Funzione: updateValore');
-    emit(state.copyWith(valore: value == '' ? null : double.parse(value)));
+
+    double parseDoubleInput(String value) {
+      if (value.isEmpty) return 0.0;
+
+      // Replace comma with period
+      String sanitized = value.replaceAll(',', '.');
+
+      // Handle multiple decimal points - keep only first one
+      int firstDecimalIndex = sanitized.indexOf('.');
+      if (firstDecimalIndex != -1) {
+        String beforeDecimal = sanitized.substring(0, firstDecimalIndex + 1);
+        String afterDecimal =
+            sanitized.substring(firstDecimalIndex + 1).replaceAll('.', '');
+        sanitized = beforeDecimal + afterDecimal;
+      }
+
+      return double.tryParse(sanitized) ?? 0.0;
+    }
+
+    emit(state.copyWith(valore: value == '' ? null : parseDoubleInput(value)));
   }
 
   void updateBrano1A(String value) {

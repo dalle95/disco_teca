@@ -181,7 +181,10 @@ class DiscoModel {
       ordine: json['ordine'],
       titoloAlbum: json['titoloAlbum'],
       anno: json['anno'],
-      valore: json['valore'],
+      valore: // Use type-safe conversion for both int and double
+          (json['valore'] is int)
+              ? (json['valore'] as int).toDouble()
+              : double.tryParse(json['valore'].toString()) ?? 0.0,
       brano1A: json['brano1A'],
       brano2A: json['brano2A'],
       brano3A: json['brano3A'],

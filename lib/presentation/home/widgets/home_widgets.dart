@@ -228,7 +228,7 @@ class BarraOrdinamento extends StatelessWidget {
                       ],
                     ),
                     onPressed: () async {
-                      DiscoEntity disco = DiscoEntity.empty().copyWith(
+                      DiscoEntity disco = DiscoEntity().copyWith(
                         tipologia: giri,
                         posizione: posizione,
                       );
@@ -375,7 +375,7 @@ class BarraOrdinamentoDesktop extends StatelessWidget {
                             ],
                           ),
                           onPressed: () async {
-                            DiscoEntity disco = DiscoEntity.empty().copyWith(
+                            DiscoEntity disco = DiscoEntity().copyWith(
                               tipologia: giri,
                               posizione: posizione,
                             );
