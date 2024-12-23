@@ -9,4 +9,7 @@ class Error extends UIState {
   Error(this.message);
 }
 
-class Success extends UIState {}
+class Success extends UIState {
+  final String message;
+  Success({this.message = 'Operazione completata con successo'});
+}

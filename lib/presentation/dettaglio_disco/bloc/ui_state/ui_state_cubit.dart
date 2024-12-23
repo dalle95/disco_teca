@@ -7,5 +7,5 @@ class UIStateCubit extends Cubit<UIState> {
 
   void setLoading() => emit(Loading());
   void setError(String message) => emit(Error(message));
-  void setSuccess() => emit(Success());
+  void setSuccess(String message) => emit(Success(message: message));
 }

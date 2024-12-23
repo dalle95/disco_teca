@@ -40,7 +40,7 @@ class DettaglioDiscoPage extends StatelessWidget {
           } else if (state is Success) {
             showScaffoldMessage(
               context: context,
-              message: 'Salvataggio avvenuto con successo!',
+              message: state.message,
             );
           }
         },

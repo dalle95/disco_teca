@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/common/widgets/responsive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -237,6 +238,7 @@ class SezioneLogout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = Responsive.isDesktop(context);
     return Container(
       margin: const EdgeInsets.only(top: 16),
       child: BlocProvider(
@@ -265,14 +267,18 @@ class SezioneLogout extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.exit_to_app),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Logout',
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              color: Theme.of(context).colorScheme.onError,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
+                      if (!isDesktop) const SizedBox(width: 8),
+                      if (!isDesktop)
+                        Text(
+                          'Logout',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onError,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                     ],
                   ),
                 ),

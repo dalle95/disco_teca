@@ -1,23 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/service_locator.dart';
-
 import '/common/widgets/selezione_disco.dart';
 import '/common/widgets/textfield_custom.dart';
-import '/common/widgets/responsive.dart';
 
 import '/domain/disco/entities/disco.dart';
-import '/domain/disco/usescases/elimina_disco.dart';
 
 import '/presentation/dettaglio_disco/bloc/dettaglio_disco_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/lato_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/lista_posizioni/listaposizioni_state.dart';
 import '/presentation/dettaglio_disco/bloc/inserimentoposizione_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/lista_posizioni/listaposizioni_cubit.dart';
-import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
 
 class DettaglioDiscoAppBar extends StatelessWidget
     implements PreferredSizeWidget {
@@ -30,73 +23,47 @@ class DettaglioDiscoAppBar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    // bool isMobile = Responsive.isMobile(context);
-
     return Padding(
       padding: const EdgeInsets.only(right: 8),
-      child: AppBar(
-        title: const Text('Dettaglio Disco'),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              // DiscoEntity disco = DiscoEntity.copyFrom(
-              //     context.read<DettaglioDiscoCubit>().state);
-              await context.read<DettaglioDiscoCubit>().salvaDati(context);
-
-              // if (context.mounted) {
-              // DiscoEntity discoAggiornato =
-              //     context.read<DettaglioDiscoCubit>().state;
-
-              // context.read<DischiCubit>().aggiornaLista(
-              //       disco: discoAggiornato,
-              //       tipologia: disco.id == null
-              //           ? StatoAggiornamentoLista.aggiunta
-              //           : StatoAggiornamentoLista.modifica,
-              //     );
-              // if (isMobile) {
-              //   Navigator.of(context).pop();
-              // }
-              // }
-            },
-            icon: CircleAvatar(
-              radius: 20,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              child: Icon(
-                Icons.save,
-                size: 25,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-          ),
-          if (context.read<DettaglioDiscoCubit>().state.id != null)
-            IconButton(
-              onPressed: () async {
-                DiscoEntity disco = context.read<DettaglioDiscoCubit>().state;
-
-                await sl<EliminaDiscoUseCase>().call(params: disco);
-
-                if (context.mounted) {
-                  context.read<DischiCubit>().aggiornaLista(
-                        disco: disco,
-                        tipologia: StatoAggiornamentoLista.eliminazione,
-                      );
-
-                  if (Platform.isAndroid || Platform.isIOS) {
-                    Navigator.of(context).pop();
-                  }
-                }
-              },
-              icon: CircleAvatar(
-                radius: 20,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Icon(
-                  Icons.delete_forever_rounded,
-                  size: 25,
-                  color: Theme.of(context).colorScheme.onBackground,
+      child: BlocBuilder<DettaglioDiscoCubit, DiscoEntity>(
+        builder: (context, state) {
+          return AppBar(
+            title: const Text('Dettaglio Disco'),
+            actions: [
+              IconButton(
+                onPressed: () async {
+                  await context.read<DettaglioDiscoCubit>().salvaDati(context);
+                },
+                icon: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  child: Icon(
+                    Icons.save,
+                    size: 25,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
                 ),
               ),
-            ),
-        ],
+              if (state.id != null)
+                IconButton(
+                  onPressed: () async {
+                    await context
+                        .read<DettaglioDiscoCubit>()
+                        .eliminaDisco(context);
+                  },
+                  icon: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: Icon(
+                      Icons.delete_forever_rounded,
+                      size: 25,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -129,141 +96,193 @@ class SezioneInformazioniDisco extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DettaglioDiscoCubit, DiscoEntity>(
-        builder: (context, disco) {
-      return Column(
-        children: [
-          // Artista
-          TextFieldCustom(
-            labelText: 'Artista',
-            value: disco.artista ?? '',
-            onChanged: (value) =>
-                context.read<DettaglioDiscoCubit>().updateArtista(value),
-          ),
-          const SizedBox(height: 16),
+      builder: (context, disco) {
+        return Column(
+          children: [
+            // Artista
+            TextFieldCustom(
+              labelText: 'Artista',
+              value: disco.artista ?? '',
+              onChanged: (value) =>
+                  context.read<DettaglioDiscoCubit>().updateArtista(value),
+            ),
+            const SizedBox(height: 16),
 
-          // Titolo Album
-          TextFieldCustom(
-            labelText: 'Titolo Album',
-            value: disco.titoloAlbum ?? '',
-            onChanged: (value) =>
-                context.read<DettaglioDiscoCubit>().updateTitolo(value),
-          ),
-          const SizedBox(height: 16),
+            // Titolo Album
+            TextFieldCustom(
+              labelText: 'Titolo Album',
+              value: disco.titoloAlbum ?? '',
+              onChanged: (value) =>
+                  context.read<DettaglioDiscoCubit>().updateTitolo(value),
+            ),
+            const SizedBox(height: 16),
 
-          // Selettore Modalità Inserimento Posizione
-          BlocBuilder<InserimentoPosizioneCubit, bool>(
-            builder: (context, posizioneEsistente) {
-              return Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Usa posizione esistente?',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      Switch(
-                        value: posizioneEsistente,
-                        onChanged: (value) => context
-                            .read<InserimentoPosizioneCubit>()
-                            .togglePosizione(),
-                      ),
-                    ],
-                  ),
-                  // Posizione (DropDown o TextField)
-                  posizioneEsistente
-                      ? BlocBuilder<ListaPosizioniCubit, ListaPosizioniState>(
-                          builder: (context, state) {
-                            if (state is ListaPosizioniLoading) {
-                              return const CircularProgressIndicator();
-                            }
-                            if (state is ListaPosizioniLoaded) {
-                              return DropdownButtonFormField<String>(
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                ),
-                                value: context
-                                    .read<DettaglioDiscoCubit>()
-                                    .state
-                                    .posizione,
-                                decoration: const InputDecoration(
-                                    labelText: 'Posizione'),
-                                items:
-                                    state.lista.map<DropdownMenuItem<String>>(
-                                  (posizione) {
-                                    return DropdownMenuItem<String>(
-                                      value: posizione,
-                                      child: Text(posizione),
-                                    );
-                                  },
-                                ).toList(),
-                                onChanged: (String? value) {
-                                  if (value != null) {
-                                    context
-                                        .read<DettaglioDiscoCubit>()
-                                        .updatePosizione(value);
-                                  }
-                                },
-                              );
-                            }
-                            return Container();
-                          },
-                        )
-                      : TextFieldCustom(
-                          labelText: 'Posizione',
-                          value: disco.posizione ?? '',
-                          onChanged: (value) => context
-                              .read<DettaglioDiscoCubit>()
-                              .updatePosizione(value),
+            // Selettore Modalità Inserimento Posizione
+            BlocBuilder<InserimentoPosizioneCubit, bool>(
+              builder: (context, posizioneEsistente) {
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Usa posizione esistente?',
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 16),
+                        Switch(
+                          value: posizioneEsistente,
+                          onChanged: (value) => context
+                              .read<InserimentoPosizioneCubit>()
+                              .togglePosizione(),
+                        ),
+                      ],
+                    ),
+                    // Posizione (DropDown o TextField)
+                    posizioneEsistente
+                        ? BlocBuilder<ListaPosizioniCubit, ListaPosizioniState>(
+                            builder: (context, state) {
+                              if (state is ListaPosizioniLoading) {
+                                return const CircularProgressIndicator();
+                              }
+                              if (state is ListaPosizioniLoaded) {
+                                return DropdownButtonFormField<String>(
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                  ),
+                                  value: context
+                                      .read<DettaglioDiscoCubit>()
+                                      .state
+                                      .posizione,
+                                  decoration: const InputDecoration(
+                                      labelText: 'Posizione'),
+                                  items:
+                                      state.lista.map<DropdownMenuItem<String>>(
+                                    (posizione) {
+                                      return DropdownMenuItem<String>(
+                                        value: posizione,
+                                        child: Text(posizione),
+                                      );
+                                    },
+                                  ).toList(),
+                                  onChanged: (String? value) {
+                                    if (value != null) {
+                                      context
+                                          .read<DettaglioDiscoCubit>()
+                                          .updatePosizione(value);
+                                    }
+                                  },
+                                );
+                              }
+                              return Container();
+                            },
+                          )
+                        : TextFieldCustom(
+                            labelText: 'Posizione',
+                            value: disco.posizione ?? '',
+                            onChanged: (value) => context
+                                .read<DettaglioDiscoCubit>()
+                                .updatePosizione(value),
+                          ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 16),
 
-          // Ordine
-          TextFieldCustom(
-            labelText: 'Ordine',
-            keyboardType: TextInputType.number,
-            value: disco.ordine == 0 || disco.ordine == null
-                ? ''
-                : disco.ordine.toString(),
-            onChanged: (value) =>
-                context.read<DettaglioDiscoCubit>().updateOrdine(value),
-          ),
-          const SizedBox(height: 16),
+            // Ordine
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: () {
+                    final currentValue = disco.ordine ?? 0;
+                    context
+                        .read<DettaglioDiscoCubit>()
+                        .updateOrdine((currentValue - 1).toString());
+                  },
+                ),
+                Expanded(
+                  child: TextFieldCustom(
+                    textAlign: TextAlign.center,
+                    labelText: 'Ordine',
+                    keyboardType: TextInputType.number,
+                    value: disco.ordine == 0 || disco.ordine == null
+                        ? ''
+                        : disco.ordine.toString(),
+                    onChanged: (value) =>
+                        context.read<DettaglioDiscoCubit>().updateOrdine(value),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    final currentValue = disco.ordine ?? 0;
+                    context
+                        .read<DettaglioDiscoCubit>()
+                        .updateOrdine((currentValue + 1).toString());
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
 
-          // Anno
-          TextFieldCustom(
-            labelText: 'Anno',
-            keyboardType: TextInputType.number,
-            value: disco.anno ?? '',
-            onChanged: (value) =>
-                context.read<DettaglioDiscoCubit>().updateAnno(value),
-          ),
-          const SizedBox(height: 16),
+            // Anno
+            TextFieldCustom(
+              labelText: 'Anno',
+              keyboardType: TextInputType.number,
+              value: disco.anno ?? '',
+              onChanged: (value) =>
+                  context.read<DettaglioDiscoCubit>().updateAnno(value),
+            ),
+            const SizedBox(height: 16),
 
-          // Valore
-          TextFieldCustom(
-            labelText: 'Valore',
-            keyboardType: TextInputType.number,
-            value: (disco.valore == 0 ||
-                    disco.valore == 0.0 ||
-                    disco.valore == null)
-                ? ''
-                : disco.valore! % 1 == 0
-                    ? disco.valore!.toInt().toString()
-                    : disco.valore.toString(),
-            onChanged: (value) =>
-                context.read<DettaglioDiscoCubit>().updateValore(value),
-          ),
-        ],
-      );
-    });
+            // Valore
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: () {
+                    final currentValue = disco.valore ?? 0.0;
+                    context
+                        .read<DettaglioDiscoCubit>()
+                        .updateValore((currentValue - 0.5).toString());
+                  },
+                ),
+                Expanded(
+                  child: TextFieldCustom(
+                    labelText: 'Valore',
+                    prefixIcon: const Icon(Icons.euro),
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    value: (disco.valore == 0 ||
+                            disco.valore == 0.0 ||
+                            disco.valore == null)
+                        ? ''
+                        : disco.valore! % 1 == 0
+                            ? disco.valore!.toInt().toString()
+                            : disco.valore.toString(),
+                    onChanged: (value) =>
+                        context.read<DettaglioDiscoCubit>().updateValore(value),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    final currentValue = disco.valore ?? 0.0;
+                    context
+                        .read<DettaglioDiscoCubit>()
+                        .updateValore((currentValue + 0.5).toString());
+                  },
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
   }
 }
 

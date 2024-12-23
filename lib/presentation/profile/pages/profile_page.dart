@@ -1,5 +1,6 @@
 import 'package:app_disco_teca/common/widgets/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import '/common/widgets/appbar/app_bar.dart';
 
@@ -19,7 +20,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: const BasicAppbar(title: 'Profilo Utente'),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             SezioneInfoUtente(),
@@ -33,22 +34,28 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildDesktopView(BuildContext context) {
+    Logger().e('Building desktop view'); // Debugging line
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: const BasicAppbar(
-        title: 'Profilo Utente',
+      appBar: AppBar(
+        title: Text('Profilo Utente'),
+        actions: [
+          SezioneLogout(),
+        ],
       ),
       body: Container(
         padding: EdgeInsets.only(bottom: 16),
         child: Row(
           children: [
-            Column(
-              children: [
-                Expanded(child: SezioneInfoUtente()),
-                Expanded(child: SezioneStatistiche()),
-              ],
+            Expanded(
+              child: Column(
+                children: [
+                  Expanded(child: SezioneInfoUtente()),
+                  SezioneInfoVersioneApp(),
+                ],
+              ),
             ),
-            Expanded(child: SezioneInfoVersioneApp()),
+            Expanded(child: SezioneStatistiche()),
           ],
         ),
       ),

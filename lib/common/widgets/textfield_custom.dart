@@ -8,6 +8,7 @@ class TextFieldCustom extends StatefulWidget {
   final Function(String)? onChanged;
   final Function()? onPressed;
   final TextInputType? keyboardType;
+  final TextAlign textAlign; // New parameter
 
   const TextFieldCustom({
     this.hintText,
@@ -17,6 +18,7 @@ class TextFieldCustom extends StatefulWidget {
     this.onChanged,
     this.onPressed,
     this.keyboardType,
+    this.textAlign = TextAlign.start, // Default left alignment
     super.key,
   });
 
@@ -59,19 +61,19 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
       valueListenable: controller,
       builder: (context, value, child) {
         return TextField(
+          textAlign: widget.textAlign,
           keyboardType: widget.keyboardType,
           controller: controller,
           decoration: InputDecoration(
             labelText: widget.labelText,
             hintText: widget.hintText,
             prefixIcon: widget.prefixIcon,
+            alignLabelWithHint: true, // Aligns label with input text
             suffixIcon: widget.onPressed == null
                 ? null
                 : controller.text.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(
-                          Icons.clear,
-                        ),
+                        icon: const Icon(Icons.clear),
                         onPressed: () {
                           controller.clear();
                           widget.onPressed!();

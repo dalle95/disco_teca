@@ -1,4 +1,6 @@
 import 'package:app_disco_teca/common/widgets/responsive.dart';
+import 'package:app_disco_teca/domain/disco/usescases/elimina_disco.dart';
+import 'package:app_disco_teca/presentation/home/bloc/dettaglio_disco_desktop_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
@@ -70,7 +72,7 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
                     : StatoAggiornamentoLista.modifica,
               );
 
-          context.read<UIStateCubit>().setSuccess();
+          context.read<UIStateCubit>().setSuccess('Disco salvato con successo');
 
           bool isMobile = Responsive.isMobile(context);
           if (isMobile) {
@@ -80,6 +82,39 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
         },
       );
     }
+  }
+
+  Future<void> eliminaDisco(BuildContext context) async {
+    logger.d('DettaglioDiscoCubit | Funzione: eliminaDisco');
+
+    final data = await sl<EliminaDiscoUseCase>().call(params: state);
+
+    data.fold(
+      (error) {
+        logger.d(error);
+        context.read<UIStateCubit>().setError('Eliminazione fallita: $error');
+        emit(state);
+      },
+      (data) {
+        if (context.mounted) {
+          context.read<DischiCubit>().aggiornaLista(
+                disco: state,
+                tipologia: StatoAggiornamentoLista.eliminazione,
+              );
+          bool isMobile = Responsive.isMobile(context);
+
+          if (isMobile) {
+            Navigator.of(context).pop();
+          } else {
+            context.read<DettaglioDiscoDesktopCubit>().setNessunDisco();
+          }
+          context
+              .read<UIStateCubit>()
+              .setSuccess('Disco eliminato con successo');
+          close();
+        }
+      },
+    );
   }
 
   void updateGiri(String value) {
