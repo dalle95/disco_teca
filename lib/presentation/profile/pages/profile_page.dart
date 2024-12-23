@@ -1,8 +1,7 @@
-import 'package:app_disco_teca/common/widgets/responsive.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 
 import '/common/widgets/appbar/app_bar.dart';
+import '/common/widgets/responsive.dart';
 
 import '/presentation/profile/widgets/profile_widgets.dart';
 
@@ -24,7 +23,10 @@ class ProfilePage extends StatelessWidget {
         child: Column(
           children: [
             SezioneInfoUtente(),
-            SezioneStatistiche(),
+            Container(
+              margin: const EdgeInsets.only(top: 16),
+              child: SezioneStatistiche(),
+            ),
             SezioneInfoVersioneApp(),
             SezioneLogout(),
           ],
@@ -34,7 +36,6 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildDesktopView(BuildContext context) {
-    Logger().e('Building desktop view'); // Debugging line
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(

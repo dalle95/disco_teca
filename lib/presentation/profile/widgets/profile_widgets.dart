@@ -145,7 +145,6 @@ class SezioneStatistiche extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 16),
       child: BlocProvider(
         create: (_) => StatisticheCubit()..getStatistiche(),
         child: BlocBuilder<StatisticheCubit, StatisticheState>(
