@@ -8,4 +8,6 @@ abstract class AuthRepository {
   Future<Either> signin(SigninReqParams params);
   Future<bool> isLoggedIn();
   Future<Either> logout();
+  Future<Either> signinWithGoogle();
+  Future<Either> registerWithGoogle();
 }

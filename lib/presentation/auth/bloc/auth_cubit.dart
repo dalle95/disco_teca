@@ -6,13 +6,12 @@ import '/data/auth/models/register_req_params.dart';
 import '/data/auth/models/signin_req_params.dart';
 import '/domain/auth/usecases/register.dart';
 import '/domain/auth/usecases/signin.dart';
+import '/domain/auth/usecases/signin_with_google.dart';
+import '/domain/auth/usecases/register_with_google.dart';
 import '/presentation/auth/bloc/auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final SigninUseCase _signinUseCase;
-  final RegisterUseCase _registerUseCase;
-
-  AuthCubit(this._signinUseCase, this._registerUseCase) : super(AuthState());
+  AuthCubit() : super(AuthState());
 
   // Per gestire i log
   final logger = sl<Logger>();
@@ -38,7 +37,7 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
 
-    final result = await _signinUseCase.call(
+    final result = await sl<SigninUseCase>().call(
       params: SigninReqParams(
         email: email,
         password: password,
@@ -91,7 +90,7 @@ class AuthCubit extends Cubit<AuthState> {
       );
       return;
     }
-    final result = await _registerUseCase.call(
+    final result = await sl<RegisterUseCase>().call(
       params: RegisterReqParams(
         email: email,
         password: password,
@@ -107,6 +106,54 @@ class AuthCubit extends Cubit<AuthState> {
       },
       (_) {
         logger.d('Registrazione avvenuta con successo');
+        emit(
+          state.copyWith(isLoading: false, isSuccess: true),
+        );
+      },
+    );
+  }
+
+  Future<void> signInWithGoogle() async {
+    logger.d('AuthCubit | Funzione: signInWithGoogle');
+
+    emit(
+      state.copyWith(isLoading: true, errorMessage: null, isSuccess: false),
+    );
+
+    final result = await sl<SigninWithGoogleUseCase>().call();
+    result.fold(
+      (error) {
+        logger.d('Errore durante il login con Google');
+        emit(
+          state.copyWith(isLoading: false, errorMessage: error),
+        );
+      },
+      (_) {
+        logger.d('Login con Google avvenuto con successo');
+        emit(
+          state.copyWith(isLoading: false, isSuccess: true),
+        );
+      },
+    );
+  }
+
+  Future<void> registerWithGoogle() async {
+    logger.d('AuthCubit | Funzione: registerWithGoogle');
+
+    emit(
+      state.copyWith(isLoading: true, errorMessage: null, isSuccess: false),
+    );
+
+    final result = await sl<RegisterWithGoogleUseCase>().call();
+    result.fold(
+      (error) {
+        logger.d('Errore durante la registrazione con Google');
+        emit(
+          state.copyWith(isLoading: false, errorMessage: error),
+        );
+      },
+      (_) {
+        logger.d('Registrazione con Google avvenuta con successo');
         emit(
           state.copyWith(isLoading: false, isSuccess: true),
         );

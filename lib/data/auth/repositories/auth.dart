@@ -50,6 +50,41 @@ class AuthRepositoryImpl extends AuthRepository {
     );
   }
 
+  Future<Either<String, UserCredential>> signinWithGoogle() async {
+    var data = await sl<AuthService>().signinWithGoogle();
+    return data.fold(
+      (error) {
+        return Left(error);
+      },
+      (userCredential) async {
+        // Ottiene il token dell'utente
+        String? token = await userCredential.user?.getIdToken();
+        if (token != null) {
+          await _storage.write(key: 'token', value: token);
+        }
+        return Right(userCredential);
+      },
+    );
+  }
+
+  @override
+  Future<Either<String, UserCredential>> registerWithGoogle() async {
+    var data = await sl<AuthService>().registerWithGoogle();
+    return data.fold(
+      (error) {
+        return Left(error);
+      },
+      (userCredential) async {
+        // Ottiene il token dell'utente
+        String? token = await userCredential.user?.getIdToken();
+        if (token != null) {
+          await _storage.write(key: 'token', value: token);
+        }
+        return Right(userCredential);
+      },
+    );
+  }
+
   @override
   Future<bool> isLoggedIn() async {
     String? token = await _storage.read(key: 'token');

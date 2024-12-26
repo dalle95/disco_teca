@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/service_locator.dart';
-
 import '/common/widgets/responsive.dart';
 import '/common/helper/navigation/app_navigation.dart';
 
 import '/core/configs/assets/app_images.dart';
 
-import '/domain/auth/usecases/signin.dart';
-import '/domain/auth/usecases/register.dart';
-
+import '/presentation/auth/widgets/google_signin_button.dart';
 import '/presentation/auth/bloc/auth_cubit.dart';
 import '/presentation/auth/bloc/auth_state.dart';
 import '/presentation/home/pages/home.dart';
@@ -25,7 +21,7 @@ class SigninPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AuthCubit(sl<SigninUseCase>(), sl<RegisterUseCase>()),
+      create: (_) => AuthCubit(),
       child: Scaffold(
         body: BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
@@ -150,22 +146,41 @@ class SigninPage extends StatelessWidget {
               ),
               BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
-                  return buildPulsante(
-                    context: context,
-                    lable: state.isLoading ? 'Caricamento...' : 'Accedi',
-                    onPress: state.isLoading
-                        ? null
-                        : () {
-                            context.read<AuthCubit>().signIn(
-                                  _emailController.text,
-                                  _passwordController.text,
-                                );
-                          },
+                  return Column(
+                    children: [
+                      buildPulsante(
+                        context: context,
+                        lable: state.isLoading ? 'Caricamento...' : 'Accedi',
+                        onPress: state.isLoading
+                            ? null
+                            : () {
+                                context.read<AuthCubit>().signIn(
+                                      _emailController.text,
+                                      _passwordController.text,
+                                    );
+                              },
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Oppure',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 20),
+                      GoogleSignInButton(
+                        isLoading: state.isLoading,
+                        onPressed: state.isLoading
+                            ? () {}
+                            : () {
+                                context.read<AuthCubit>().signInWithGoogle();
+                              },
+                      ),
+                    ],
                   );
                 },
               ),
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
               buildRegisterText(context),
             ],

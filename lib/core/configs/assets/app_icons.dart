@@ -10,4 +10,6 @@ class AppIcons {
   static const discoViola = '${basePath}vinyl-record-violet.png';
 
   static const discoCD = '${basePath}vinyl-record-lightblue.png';
+
+  static const logoGoogle = '${basePath}google_logo.png';
 }
