@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dartz/dartz.dart';
 import 'package:logger/logger.dart';
@@ -51,38 +52,76 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   Future<Either<String, UserCredential>> signinWithGoogle() async {
-    var data = await sl<AuthService>().signinWithGoogle();
-    return data.fold(
-      (error) {
-        return Left(error);
-      },
-      (userCredential) async {
-        // Ottiene il token dell'utente
-        String? token = await userCredential.user?.getIdToken();
-        if (token != null) {
-          await _storage.write(key: 'token', value: token);
-        }
-        return Right(userCredential);
-      },
-    );
+    try {
+      UserCredential userCredential;
+      if (kIsWeb) {
+        // Web specific code
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        userCredential =
+            await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      } else {
+        // Mobile specific code
+        var data = await sl<AuthService>().signinWithGoogle();
+        return data.fold(
+          (error) {
+            return Left(error);
+          },
+          (userCredential) async {
+            // Ottiene il token dell'utente
+            String? token = await userCredential.user?.getIdToken();
+            if (token != null) {
+              await _storage.write(key: 'token', value: token);
+            }
+            return Right(userCredential);
+          },
+        );
+      }
+      // Ottiene il token dell'utente
+      String? token = await userCredential.user?.getIdToken();
+      if (token != null) {
+        await _storage.write(key: 'token', value: token);
+      }
+      return Right(userCredential);
+    } catch (e) {
+      return Left(e.toString());
+    }
   }
 
   @override
   Future<Either<String, UserCredential>> registerWithGoogle() async {
-    var data = await sl<AuthService>().registerWithGoogle();
-    return data.fold(
-      (error) {
-        return Left(error);
-      },
-      (userCredential) async {
-        // Ottiene il token dell'utente
-        String? token = await userCredential.user?.getIdToken();
-        if (token != null) {
-          await _storage.write(key: 'token', value: token);
-        }
-        return Right(userCredential);
-      },
-    );
+    try {
+      UserCredential userCredential;
+      if (kIsWeb) {
+        // Web specific code
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        userCredential =
+            await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      } else {
+        // Mobile specific code
+        var data = await sl<AuthService>().registerWithGoogle();
+        return data.fold(
+          (error) {
+            return Left(error);
+          },
+          (userCredential) async {
+            // Ottiene il token dell'utente
+            String? token = await userCredential.user?.getIdToken();
+            if (token != null) {
+              await _storage.write(key: 'token', value: token);
+            }
+            return Right(userCredential);
+          },
+        );
+      }
+      // Ottiene il token dell'utente
+      String? token = await userCredential.user?.getIdToken();
+      if (token != null) {
+        await _storage.write(key: 'token', value: token);
+      }
+      return Right(userCredential);
+    } catch (e) {
+      return Left(e.toString());
+    }
   }
 
   @override

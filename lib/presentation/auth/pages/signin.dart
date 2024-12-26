@@ -88,21 +88,41 @@ class SigninPage extends StatelessWidget {
               width: 350,
               child: BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
-                  return buildPulsante(
-                    context: context,
-                    lable: state.isLoading ? 'Caricamento...' : 'Accedi',
-                    onPress: state.isLoading
-                        ? null
-                        : () {
-                            context.read<AuthCubit>().signIn(
-                                  _emailController.text,
-                                  _passwordController.text,
-                                );
-                          },
+                  return Column(
+                    children: [
+                      buildPulsante(
+                        context: context,
+                        lable: state.isLoading ? 'Caricamento...' : 'Accedi',
+                        onPress: state.isLoading
+                            ? null
+                            : () {
+                                context.read<AuthCubit>().signIn(
+                                      _emailController.text,
+                                      _passwordController.text,
+                                    );
+                              },
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Oppure',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 20),
+                      GoogleSignInButton(
+                        isLoading: state.isLoading,
+                        onPressed: state.isLoading
+                            ? () {}
+                            : () {
+                                context.read<AuthCubit>().signInWithGoogle();
+                              },
+                      ),
+                    ],
                   );
                 },
               ),
             ),
+
             const SizedBox(height: 20),
 
             // Register text link

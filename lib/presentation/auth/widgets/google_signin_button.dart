@@ -1,5 +1,6 @@
-import 'package:app_disco_teca/core/configs/assets/app_icons.dart';
 import 'package:flutter/material.dart';
+
+import '/core/configs/assets/app_icons.dart';
 
 class GoogleSignInButton extends StatelessWidget {
   final VoidCallback onPressed;
