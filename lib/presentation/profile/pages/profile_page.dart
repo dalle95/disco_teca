@@ -45,7 +45,7 @@ class ProfilePage extends StatelessWidget {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.symmetric(vertical: 16),
         child: Row(
           children: [
             Expanded(

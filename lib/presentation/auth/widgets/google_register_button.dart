@@ -1,10 +1,6 @@
-import 'package:app_disco_teca/core/configs/assets/app_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logger/logger.dart';
 
-import '/presentation/auth/bloc/auth_cubit.dart';
-import '/service_locator.dart';
+import '/core/configs/assets/app_icons.dart';
 
 class GoogleRegisterButton extends StatelessWidget {
   final VoidCallback onPressed;

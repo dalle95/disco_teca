@@ -1,22 +1,16 @@
-import 'package:app_disco_teca/presentation/auth/widgets/google_register_button.dart';
-import 'package:app_disco_teca/presentation/auth/widgets/google_signin_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '/service_locator.dart';
 
 import '/common/helper/navigation/app_navigation.dart';
 import '/common/widgets/responsive.dart';
 
 import '/core/configs/assets/app_images.dart';
 
-import '/domain/auth/usecases/register.dart';
-import '/domain/auth/usecases/signin.dart';
-
 import '/presentation/home/pages/home.dart';
 import '/presentation/auth/widgets/auth_widgets.dart';
 import '/presentation/auth/bloc/auth_cubit.dart';
 import '/presentation/auth/bloc/auth_state.dart';
+import '/presentation/auth/widgets/google_register_button.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -99,18 +93,38 @@ class RegisterPage extends StatelessWidget {
               width: 350,
               child: BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
-                  return buildPulsante(
-                    context: context,
-                    lable: state.isLoading ? 'Caricamento...' : 'Registrati',
-                    onPress: state.isLoading
-                        ? null
-                        : () {
-                            context.read<AuthCubit>().register(
-                                  _emailController.text,
-                                  _passwordController.text,
-                                  _passwordConfirmController.text,
-                                );
-                          },
+                  return Column(
+                    children: [
+                      buildPulsante(
+                        context: context,
+                        lable:
+                            state.isLoading ? 'Caricamento...' : 'Registrati',
+                        onPress: state.isLoading
+                            ? null
+                            : () {
+                                context.read<AuthCubit>().register(
+                                      _emailController.text,
+                                      _passwordController.text,
+                                      _passwordConfirmController.text,
+                                    );
+                              },
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Oppure',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 20),
+                      GoogleRegisterButton(
+                        isLoading: state.isLoading,
+                        onPressed: state.isLoading
+                            ? () {}
+                            : () {
+                                context.read<AuthCubit>().registerWithGoogle();
+                              },
+                      ),
+                    ],
                   );
                 },
               ),
