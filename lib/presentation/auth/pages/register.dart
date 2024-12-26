@@ -1,3 +1,5 @@
+import 'package:app_disco_teca/presentation/auth/widgets/google_register_button.dart';
+import 'package:app_disco_teca/presentation/auth/widgets/google_signin_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +29,7 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AuthCubit(sl<SigninUseCase>(), sl<RegisterUseCase>()),
+      create: (_) => AuthCubit(),
       child: Scaffold(
         body: BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
@@ -157,17 +159,38 @@ class RegisterPage extends StatelessWidget {
               ),
               BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
-                  return buildPulsante(
-                    context: context,
-                    lable: state.isLoading ? 'Caricamento...' : 'Accedi',
-                    onPress: state.isLoading
-                        ? null
-                        : () {
-                            context.read<AuthCubit>().signIn(
-                                  _emailController.text,
-                                  _passwordController.text,
-                                );
-                          },
+                  return Column(
+                    children: [
+                      buildPulsante(
+                        context: context,
+                        lable:
+                            state.isLoading ? 'Caricamento...' : 'Registrati',
+                        onPress: state.isLoading
+                            ? null
+                            : () {
+                                context.read<AuthCubit>().register(
+                                      _emailController.text,
+                                      _passwordController.text,
+                                      _passwordConfirmController.text,
+                                    );
+                              },
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Oppure',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 20),
+                      GoogleRegisterButton(
+                        isLoading: state.isLoading,
+                        onPressed: state.isLoading
+                            ? () {}
+                            : () {
+                                context.read<AuthCubit>().registerWithGoogle();
+                              },
+                      ),
+                    ],
                   );
                 },
               ),

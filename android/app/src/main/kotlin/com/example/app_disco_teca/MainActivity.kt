@@ -1,4 +1,4 @@
-package com.example.app_disco_teca
+package com.example.disco_teca
 
 import io.flutter.embedding.android.FlutterActivity
 

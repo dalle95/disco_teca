@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import '/firebase_options.dart';
 
@@ -29,6 +30,8 @@ import '/domain/auth/usecases/logout.dart';
 import '/domain/disco/usescases/get_ricerca_dischi.dart';
 import '/domain/disco/usescases/salva_disco.dart';
 import '/domain/disco/usescases/elimina_disco.dart';
+import '/domain/auth/usecases/signin_with_google.dart';
+import '/domain/auth/usecases/register_with_google.dart';
 
 final sl = GetIt.instance;
 
@@ -45,6 +48,7 @@ Future<void> setupServiceLocator() async {
   sl.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   sl.registerSingleton<Logger>(Logger());
   sl.registerSingleton<Dio>(Dio());
+  sl.registerSingleton<GoogleSignIn>(GoogleSignIn());
 
   // Services
   sl.registerSingleton<AuthService>(AuthApiServiceImpl());
@@ -68,4 +72,6 @@ Future<void> setupServiceLocator() async {
   sl.registerSingleton<DownloadAppUseCase>(DownloadAppUseCase());
   sl.registerSingleton<GetNuovaVersioneAppUseCase>(
       GetNuovaVersioneAppUseCase());
+  sl.registerSingleton<SigninWithGoogleUseCase>(SigninWithGoogleUseCase());
+  sl.registerSingleton<RegisterWithGoogleUseCase>(RegisterWithGoogleUseCase());
 }

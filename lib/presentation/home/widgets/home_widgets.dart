@@ -495,7 +495,7 @@ class ElencoDischiDesktop extends StatelessWidget {
         return BlocBuilder<DischiCubit, DischiState>(
           builder: (context, state) {
             if (state is DischiLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: LoadingView());
             }
             if (state is DischiLoaded) {
               return Row(
