@@ -7,4 +7,9 @@ class AppColors {
   static const accent = Colors.deepOrangeAccent;
   static const surface = Color(0xFF3D3D3D); // Grigio più chiaro per la surface
   static const onSurface = Colors.white;
+
+  // Light theme colors
+  static const lightBackground = Color(0xFFFFFFFF); // Bianco
+  static const lightSurface = Color(0xFFF5F5F5); // Grigio molto chiaro
+  static const lightOnSurface = Color(0xFF000000); // Nero
 }

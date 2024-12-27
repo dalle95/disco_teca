@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/core/configs/theme/app_colors.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -43,8 +44,47 @@ Widget buildForm({
     children: [
       TextField(
         controller: emailController,
-        decoration: const InputDecoration(
+        style: TextStyle(
+          color: AppColors.accent,
+        ),
+        decoration: InputDecoration(
           labelText: 'Email',
+          labelStyle: const TextStyle(
+            color: AppColors.accent,
+          ),
+
+          hintStyle: const TextStyle(
+            color: AppColors
+                .secondBackground, // Colore del testo segnaposto (hint)
+            fontWeight: FontWeight.w400,
+          ),
+          filled: true,
+          fillColor: AppColors.surface.withOpacity(0.9),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15), // Bordo arrotondato
+            borderSide: const BorderSide(
+              color: AppColors.surface, // Colore del bordo quando non è attivo
+              width: 1,
+            ),
+          ),
+
+          // Configurazione del bordo abilitato (quando il campo non è in focus)
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              color: AppColors.surface,
+              width: 1,
+            ),
+          ),
+
+          // Configurazione del bordo in focus
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              color: AppColors.accent,
+              width: 2.5, // Bordo più spesso quando è selezionato
+            ),
+          ),
         ),
       ),
       const SizedBox(height: 16),
@@ -52,8 +92,46 @@ Widget buildForm({
       TextField(
         controller: passwordController,
         obscureText: true,
-        decoration: const InputDecoration(
+        style: TextStyle(
+          color: AppColors.accent,
+        ),
+        decoration: InputDecoration(
           labelText: 'Password',
+          labelStyle: const TextStyle(
+            color: AppColors.accent,
+          ), // Colore per l'etichetta (label)
+          hintStyle: const TextStyle(
+            color: AppColors
+                .secondBackground, // Colore del testo segnaposto (hint)
+            fontWeight: FontWeight.w400,
+          ),
+          filled: true,
+          fillColor: AppColors.surface.withOpacity(0.9),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15), // Bordo arrotondato
+            borderSide: const BorderSide(
+              color: AppColors.surface, // Colore del bordo quando non è attivo
+              width: 1,
+            ),
+          ),
+
+          // Configurazione del bordo abilitato (quando il campo non è in focus)
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              color: AppColors.surface,
+              width: 1,
+            ),
+          ),
+
+          // Configurazione del bordo in focus
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              color: AppColors.accent,
+              width: 2.5, // Bordo più spesso quando è selezionato
+            ),
+          ),
         ),
       ),
 
@@ -65,8 +143,47 @@ Widget buildForm({
             TextField(
               controller: passwordConfirmController,
               obscureText: true,
-              decoration: const InputDecoration(
+              style: TextStyle(
+                color: AppColors.accent,
+              ),
+              decoration: InputDecoration(
                 labelText: 'Ripeti password',
+                labelStyle: const TextStyle(
+                  color: AppColors.accent,
+                ), // Colore per l'etichetta (label)
+                hintStyle: const TextStyle(
+                  color: AppColors
+                      .secondBackground, // Colore del testo segnaposto (hint)
+                  fontWeight: FontWeight.w400,
+                ),
+                filled: true,
+                fillColor: AppColors.surface.withOpacity(0.9),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15), // Bordo arrotondato
+                  borderSide: const BorderSide(
+                    color: AppColors
+                        .surface, // Colore del bordo quando non è attivo
+                    width: 1,
+                  ),
+                ),
+
+                // Configurazione del bordo abilitato (quando il campo non è in focus)
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(
+                    color: AppColors.surface,
+                    width: 1,
+                  ),
+                ),
+
+                // Configurazione del bordo in focus
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(
+                    color: AppColors.accent,
+                    width: 2.5, // Bordo più spesso quando è selezionato
+                  ),
+                ),
               ),
             ),
           ],
@@ -97,7 +214,10 @@ Widget buildRegisterText(BuildContext context) {
     textAlign: TextAlign.center,
     TextSpan(
       children: [
-        const TextSpan(text: "Non hai un account?"),
+        const TextSpan(
+          text: "Non hai un account?",
+          style: TextStyle(color: Colors.white70),
+        ),
         TextSpan(
           text: ' Registrati',
           style: const TextStyle(color: Colors.blue),
@@ -116,7 +236,10 @@ Widget buildSignInText(BuildContext context) {
     textAlign: TextAlign.center,
     TextSpan(
       children: [
-        const TextSpan(text: "Hai già un account?"),
+        const TextSpan(
+          text: "Hai già un account?",
+          style: TextStyle(color: Colors.white70),
+        ),
         TextSpan(
           text: ' Accedi',
           style: const TextStyle(color: Colors.blue),
