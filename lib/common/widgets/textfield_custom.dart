@@ -66,6 +66,7 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
           controller: controller,
           decoration: InputDecoration(
             labelText: widget.labelText,
+            hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
             hintText: widget.hintText,
             prefixIcon: widget.prefixIcon,
             alignLabelWithHint: true, // Aligns label with input text

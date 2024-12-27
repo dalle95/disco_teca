@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/core/configs/theme/app_theme.dart';
-import '/presentation/splash/bloc/splash_cubit.dart';
 import '/service_locator.dart';
 
+import '/common/bloc/theme/theme_cubit.dart';
+
+import '/presentation/splash/bloc/splash_cubit.dart';
 import '/presentation/splash/pages/splash.dart';
 import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
 import '/presentation/home/bloc/ordine_dischi_cubit.dart';
@@ -29,18 +30,23 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => SplashCubit()..appStarted(),
+          create: (_) => ThemeCubit(),
         ),
+        BlocProvider(create: (context) => SplashCubit()..appStarted()),
         BlocProvider(create: (_) => DischiCubit()),
         BlocProvider(create: (_) => OrdineDischiCubit()),
         BlocProvider(create: (_) => SearchCubit()),
         BlocProvider(create: (_) => PosizioneCubit()),
         BlocProvider(create: (_) => GiriCubit()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.appTheme,
-        home: const SplashPage(),
+      child: BlocBuilder<ThemeCubit, ThemeData>(
+        builder: (context, theme) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: theme,
+            home: const SplashPage(),
+          );
+        },
       ),
     );
   }

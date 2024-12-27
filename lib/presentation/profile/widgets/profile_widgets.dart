@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/common/bloc/theme/theme_cubit.dart';
 import 'package:app_disco_teca/common/widgets/responsive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -284,6 +285,43 @@ class SezioneLogout extends StatelessWidget {
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Profile'),
+        actions: [
+          BlocBuilder<ThemeCubit, ThemeData>(
+            builder: (context, state) {
+              return IconButton(
+                icon: Icon(context.read<ThemeCubit>().isDarkTheme
+                    ? Icons.dark_mode
+                    : Icons.light_mode),
+                onPressed: () {
+                  context.read<ThemeCubit>().toggleTheme();
+                },
+              );
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SezioneInfoUtente(),
+            const SezioneStatistiche(),
+            const SezioneInfoVersioneApp(),
+            const SezioneLogout(),
+          ],
         ),
       ),
     );
