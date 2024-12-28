@@ -1,12 +1,9 @@
-import 'package:app_disco_teca/common/bloc/theme/theme_cubit.dart';
-import 'package:app_disco_teca/presentation/profile/widgets/button_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/common/widgets/appbar/app_bar.dart';
 import '/common/widgets/responsive.dart';
 
 import '/presentation/profile/widgets/profile_widgets.dart';
+import '/presentation/profile/widgets/button_theme.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -24,7 +21,10 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Profilo Utente'),
         actions: [
-          ButtonChangeTheme(),
+          Container(
+            margin: const EdgeInsets.only(right: 16),
+            child: ButtonChangeTheme(),
+          ),
         ],
       ),
       body: SingleChildScrollView(

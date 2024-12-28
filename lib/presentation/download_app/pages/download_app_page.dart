@@ -97,7 +97,10 @@ class FileDownloadPage extends StatelessWidget {
                     child: Text(
                       'È presente una nuova versione dell\'app.\nScaricarla?',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 25),
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   SizedBox(
