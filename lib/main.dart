@@ -26,13 +26,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+    );
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (_) => ThemeCubit(),
         ),
-        BlocProvider(create: (context) => SplashCubit()..appStarted()),
+        BlocProvider(create: (_) => SplashCubit()),
         BlocProvider(create: (_) => DischiCubit()),
         BlocProvider(create: (_) => OrdineDischiCubit()),
         BlocProvider(create: (_) => SearchCubit()),

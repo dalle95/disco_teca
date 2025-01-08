@@ -12,7 +12,9 @@ import '/domain/download_app/usescases/nuova_versione_app.dart';
 import '/presentation/splash/bloc/splash_state.dart';
 
 class SplashCubit extends Cubit<SplashState> {
-  SplashCubit() : super(DisplaySplash());
+  SplashCubit() : super(DisplaySplash()) {
+    appStarted();
+  }
 
   // Per gestire i log
   final logger = sl<Logger>();

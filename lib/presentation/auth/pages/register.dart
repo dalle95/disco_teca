@@ -37,23 +37,21 @@ class RegisterPage extends StatelessWidget {
               AppNavigator.pushAndRemove(context, const HomePage());
             }
           },
-          child: SafeArea(
-            child: Container(
-              height: double.infinity,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    AppImages.splashBackground,
-                  ),
-                  fit: BoxFit.cover,
+          child: Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  AppImages.splashBackground,
                 ),
+                fit: BoxFit.cover,
               ),
-              child: Responsive(
-                desktop: _buildView(context),
-                tablet: _buildView(context),
-                mobile: _buildMobileView(context),
-              ),
+            ),
+            child: Responsive(
+              desktop: _buildView(context),
+              tablet: _buildView(context),
+              mobile: _buildMobileView(context),
             ),
           ),
         ),
@@ -94,6 +92,7 @@ class RegisterPage extends StatelessWidget {
               child: BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       buildPulsante(
                         context: context,
@@ -113,7 +112,10 @@ class RegisterPage extends StatelessWidget {
                       Text(
                         'Oppure',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: Colors.white70,
+                                ),
                       ),
                       const SizedBox(height: 20),
                       GoogleRegisterButton(
@@ -174,6 +176,7 @@ class RegisterPage extends StatelessWidget {
               BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       buildPulsante(
                         context: context,
@@ -193,7 +196,10 @@ class RegisterPage extends StatelessWidget {
                       Text(
                         'Oppure',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: Colors.white70,
+                                ),
                       ),
                       const SizedBox(height: 20),
                       GoogleRegisterButton(

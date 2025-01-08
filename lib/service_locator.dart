@@ -1,4 +1,3 @@
-import 'package:app_disco_teca/domain/download_app/usescases/nuova_versione_app.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,6 +20,7 @@ import '/domain/auth/repositories/auth.dart';
 import '/domain/disco/repositories/disco.dart';
 import '/domain/download_app/repositories/download_app.dart';
 import '/domain/download_app/usescases/download_app.dart';
+import '/domain/download_app/usescases/nuova_versione_app.dart';
 
 import '/domain/disco/usescases/get_dischi.dart';
 import '/domain/auth/usecases/is_logged_in.dart';

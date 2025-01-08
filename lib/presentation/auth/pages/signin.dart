@@ -89,6 +89,7 @@ class SigninPage extends StatelessWidget {
               child: BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       buildPulsante(
                         context: context,
@@ -106,7 +107,10 @@ class SigninPage extends StatelessWidget {
                       Text(
                         'Oppure',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: Colors.white70,
+                                ),
                       ),
                       const SizedBox(height: 20),
                       GoogleSignInButton(
@@ -167,6 +171,7 @@ class SigninPage extends StatelessWidget {
               BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       buildPulsante(
                         context: context,
@@ -184,7 +189,10 @@ class SigninPage extends StatelessWidget {
                       Text(
                         'Oppure',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: Colors.white70,
+                                ),
                       ),
                       const SizedBox(height: 20),
                       GoogleSignInButton(
