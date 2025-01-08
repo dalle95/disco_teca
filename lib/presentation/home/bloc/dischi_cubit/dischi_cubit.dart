@@ -248,6 +248,7 @@ class DischiCubit extends Cubit<DischiState> {
   }
 
   Future<int> getOrdinePosizione({String? posizione}) async {
+    if (posizione == null) return 1;
     var returnedData =
         await sl<GetDischiPerPosizioneUseCase>().call(params: posizione);
     return returnedData.fold(
@@ -255,7 +256,7 @@ class DischiCubit extends Cubit<DischiState> {
         return 1;
       },
       (lista) {
-        return lista.isEmpty || posizione == null
+        return lista.isEmpty
             ? 0
             : lista
                     .where(
