@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -167,11 +168,18 @@ class SezioneInformazioniDisco extends StatelessWidget {
                                       );
                                     },
                                   ).toList(),
-                                  onChanged: (String? value) {
+                                  onChanged: (String? value) async {
                                     if (value != null) {
                                       context
                                           .read<DettaglioDiscoCubit>()
                                           .updatePosizione(value);
+
+                                      int ordine = await context
+                                          .read<DischiCubit>()
+                                          .getOrdinePosizione(posizione: value);
+                                      context
+                                          .read<DettaglioDiscoCubit>()
+                                          .updateOrdine(ordine.toString());
                                     }
                                   },
                                 );

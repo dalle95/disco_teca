@@ -228,9 +228,13 @@ class BarraOrdinamento extends StatelessWidget {
                       ],
                     ),
                     onPressed: () async {
+                      int ordine = await context
+                          .read<DischiCubit>()
+                          .getOrdinePosizione(posizione: posizione);
                       DiscoEntity disco = DiscoEntity().copyWith(
                         tipologia: giri,
                         posizione: posizione,
+                        ordine: ordine,
                       );
 
                       AppNavigator.push(
@@ -375,10 +379,15 @@ class BarraOrdinamentoDesktop extends StatelessWidget {
                             ],
                           ),
                           onPressed: () async {
+                            int ordine = await context
+                                .read<DischiCubit>()
+                                .getOrdinePosizione(posizione: posizione);
                             DiscoEntity disco = DiscoEntity().copyWith(
                               tipologia: giri,
                               posizione: posizione,
+                              ordine: ordine,
                             );
+
                             if (isMobile) {
                               AppNavigator.push(
                                 context,

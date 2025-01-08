@@ -10,6 +10,7 @@ abstract class DischiRepository {
   final logger = sl<Logger>();
 
   Future<Either> getDischi(String? ordine);
+  Future<Either> getDischiPerPosizione(String? posizione);
   Future<Either> getRicercaDischi(String parametro);
   Future<Either> salvaDisco(DiscoEntity disco);
   Future<Either> eliminaDisco(DiscoEntity disco);

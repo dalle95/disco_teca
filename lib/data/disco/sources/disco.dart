@@ -16,6 +16,7 @@ abstract class DischiService {
   final logger = sl<Logger>();
 
   Future<Either> getDischi(String? ordine);
+  Future<Either> getDischiPerPosizione(String? posizione);
   Future<Either> getRicercaDischi(String parametro);
   Future<Either> salvaDisco(DiscoEntity disco);
   Future<Either> eliminaDisco(DiscoEntity disco);
@@ -74,6 +75,51 @@ class DischiApiServiceImpl extends DischiService {
     } on FirebaseException catch (e) {
       logger.d(
           'DischiApiServiceImpl | Funzione: getDischi | Errore: ${e.message}');
+      return Left(FirebaseGestioneErrori.descrizioneErrore(e));
+    }
+  }
+
+  Future<Either> getDischiPerPosizione(String? posizione) async {
+    logger.d("DischiApiServiceImpl | Funzione: getDischiPerPosizione");
+
+    List<DiscoModel> lista = [];
+
+    try {
+      // Filtro tramite la query
+      final QuerySnapshot query = await _collection
+          .where(
+            "userID",
+            isEqualTo: _firebaseAuth.currentUser!.uid,
+          )
+          .where(
+            "posizione",
+            isEqualTo: posizione,
+          )
+          .get();
+
+      // Trasformo i risultati in una lista di Servizi
+      query.docs.map(
+        (element) {
+          // Formatto il servizio
+          Map<String, dynamic> elemento =
+              element.data() as Map<String, dynamic>;
+          String id = element.reference.id;
+
+          DiscoModel disco = DiscoModel.fromJson(elemento);
+
+          disco.copyWith(id: id);
+
+          // Aggiungo il disco alla lista
+          lista.add(
+            disco,
+          );
+        },
+      ).toList();
+
+      return Right(lista);
+    } on FirebaseException catch (e) {
+      logger.d(
+          'DischiApiServiceImpl | Funzione: getDischiPerPosizione | Errore: ${e.message}');
       return Left(FirebaseGestioneErrori.descrizioneErrore(e));
     }
   }

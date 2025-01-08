@@ -89,4 +89,22 @@ class DischiRepositoryImpl extends DischiRepository {
       },
     );
   }
+
+  @override
+  Future<Either> getDischiPerPosizione(String? posizione) async {
+    logger.d("DischiRepositoryImpl | Funzione: getDischiPerPosizione");
+    logger.d('Ricerca: $posizione');
+
+    var data = await sl<DischiService>().getDischiPerPosizione(posizione);
+    return data.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) async {
+        var dischi =
+            List.from(data).map((item) => DischiMapper.toEntity(item)).toList();
+        return Right(dischi);
+      },
+    );
+  }
 }

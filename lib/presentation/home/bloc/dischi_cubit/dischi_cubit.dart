@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/domain/disco/usescases/get_dischi_per_posizione.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 
@@ -244,5 +245,29 @@ class DischiCubit extends Cubit<DischiState> {
       // Emette un nuovo stato con la lista filtrata
       emit(DischiLoaded(dischi: lista));
     }
+  }
+
+  Future<int> getOrdinePosizione({String? posizione}) async {
+    var returnedData =
+        await sl<GetDischiPerPosizioneUseCase>().call(params: posizione);
+    return returnedData.fold(
+      (error) {
+        return 1;
+      },
+      (lista) {
+        return lista.isEmpty || posizione == null
+            ? 0
+            : lista
+                    .where(
+                      (element) => element.posizione == posizione,
+                    )
+                    .map((e) => e.ordine)
+                    .reduce(
+                      (max, ordine) => ordine! > max! ? ordine : max,
+                    )!
+                    .toInt() +
+                1;
+      },
+    );
   }
 }
