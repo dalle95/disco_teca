@@ -53,6 +53,7 @@ class HomePage extends StatelessWidget {
   Scaffold _buildMobileView(BuildContext context) {
     return Scaffold(
       appBar: buildMobileAppBar(context: context),
+      floatingActionButton: AddDiscoButton(),
       body: const Column(
         children: [
           InputRicerca(),

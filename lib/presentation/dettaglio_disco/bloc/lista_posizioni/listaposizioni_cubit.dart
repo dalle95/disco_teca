@@ -7,7 +7,9 @@ import '/domain/disco/usescases/get_dischi.dart';
 import '/presentation/dettaglio_disco/bloc/lista_posizioni/listaposizioni_state.dart';
 
 class ListaPosizioniCubit extends Cubit<ListaPosizioniState> {
-  ListaPosizioniCubit() : super(ListaPosizioniLoading());
+  ListaPosizioniCubit() : super(ListaPosizioniLoading()) {
+    getListaPosizioni();
+  }
 
   // Per gestire i log
   final logger = sl<Logger>();

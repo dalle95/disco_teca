@@ -201,54 +201,61 @@ class BarraOrdinamento extends StatelessWidget {
               );
             },
           ),
-          BlocBuilder<PosizioneCubit, String?>(
-            builder: (context, posizione) {
-              return BlocBuilder<GiriCubit, String?>(
-                builder: (context, giri) {
-                  return IconButton(
-                    icon: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          child: Icon(
-                            Icons.album,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 40,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                          child: Icon(
-                            Icons.add,
-                            color: Theme.of(context).colorScheme.onBackground,
-                            size: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                    onPressed: () async {
-                      int ordine = await context
-                          .read<DischiCubit>()
-                          .getOrdinePosizione(posizione: posizione);
-                      DiscoEntity disco = DiscoEntity().copyWith(
-                        tipologia: giri,
-                        posizione: posizione,
-                        ordine: ordine,
-                      );
-
-                      AppNavigator.push(
-                        context,
-                        DettaglioDiscoPage(disco: disco),
-                      );
-                    },
-                  );
-                },
-              );
-            },
-          ),
         ],
       ),
+    );
+  }
+}
+
+class AddDiscoButton extends StatelessWidget {
+  const AddDiscoButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PosizioneCubit, String?>(
+      builder: (context, posizione) {
+        return BlocBuilder<GiriCubit, String?>(
+          builder: (context, giri) {
+            return IconButton(
+              color: Theme.of(context).colorScheme.primary,
+              icon: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    radius: 25,
+                  ),
+                  Icon(
+                    Icons.album,
+                    color: Theme.of(context).colorScheme.onBackground,
+                    size: 30,
+                  ),
+                  Icon(
+                    Icons.add,
+                    color: Theme.of(context).colorScheme.onBackground,
+                    size: 15,
+                  ),
+                ],
+              ),
+              onPressed: () async {
+                int ordine = await context
+                    .read<DischiCubit>()
+                    .getOrdinePosizione(posizione: posizione);
+                DiscoEntity disco = DiscoEntity().copyWith(
+                  tipologia: giri,
+                  posizione: posizione,
+                  ordine: ordine,
+                );
+
+                AppNavigator.push(
+                  context,
+                  DettaglioDiscoPage(disco: disco),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 }

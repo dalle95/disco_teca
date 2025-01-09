@@ -27,7 +27,7 @@ class DettaglioDiscoPage extends StatelessWidget {
           create: (_) =>
               InserimentoPosizioneCubit(disco.posizione != null ? true : false),
         ),
-        BlocProvider(create: (_) => ListaPosizioniCubit()..getListaPosizioni()),
+        BlocProvider(create: (_) => ListaPosizioniCubit()),
         BlocProvider(create: (_) => LatoCubit()),
       ],
       child: BlocListener<UIStateCubit, UIState>(
@@ -45,7 +45,8 @@ class DettaglioDiscoPage extends StatelessWidget {
           }
         },
         child: Scaffold(
-          appBar: const DettaglioDiscoAppBar(),
+          floatingActionButton: FloatingActionButtons(),
+          appBar: DettaglioDiscoAppBar(),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ListView(

@@ -1,9 +1,9 @@
-import 'package:app_disco_teca/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/common/widgets/selezione_disco.dart';
 import '/common/widgets/textfield_custom.dart';
+import '/common/widgets/responsive.dart';
 
 import '/domain/disco/entities/disco.dart';
 
@@ -12,6 +12,7 @@ import '/presentation/dettaglio_disco/bloc/lato_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/lista_posizioni/listaposizioni_state.dart';
 import '/presentation/dettaglio_disco/bloc/inserimentoposizione_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/lista_posizioni/listaposizioni_cubit.dart';
+import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
 
 class DettaglioDiscoAppBar extends StatelessWidget
     implements PreferredSizeWidget {
@@ -30,42 +31,99 @@ class DettaglioDiscoAppBar extends StatelessWidget
         builder: (context, state) {
           return AppBar(
             title: const Text('Dettaglio Disco'),
-            actions: [
-              IconButton(
-                onPressed: () async {
-                  await context.read<DettaglioDiscoCubit>().salvaDati(context);
-                },
-                icon: CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  child: Icon(
-                    Icons.save,
-                    size: 25,
-                    color: Theme.of(context).colorScheme.onBackground,
-                  ),
-                ),
-              ),
-              if (state.id != null)
-                IconButton(
-                  onPressed: () async {
-                    await context
-                        .read<DettaglioDiscoCubit>()
-                        .eliminaDisco(context);
-                  },
-                  icon: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: Icon(
-                      Icons.delete_forever_rounded,
-                      size: 25,
-                      color: Theme.of(context).colorScheme.onBackground,
+            actions: Responsive.isMobile(context)
+                ? null
+                : [
+                    IconButton(
+                      onPressed: () async {
+                        await context
+                            .read<DettaglioDiscoCubit>()
+                            .salvaDati(context);
+                      },
+                      icon: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        child: Icon(
+                          Icons.save,
+                          size: 25,
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-            ],
+                    if (state.id != null)
+                      IconButton(
+                        onPressed: () async {
+                          await context
+                              .read<DettaglioDiscoCubit>()
+                              .eliminaDisco(context);
+                        },
+                        icon: CircleAvatar(
+                          radius: 20,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          child: Icon(
+                            Icons.delete_forever_rounded,
+                            size: 25,
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                        ),
+                      ),
+                  ],
           );
         },
       ),
+    );
+  }
+}
+
+class FloatingActionButtons extends StatelessWidget {
+  const FloatingActionButtons({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DettaglioDiscoCubit, DiscoEntity>(
+      builder: (context, state) {
+        return !Responsive.isMobile(context)
+            ? SizedBox.shrink()
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (state.id != null)
+                    IconButton(
+                      onPressed: () async {
+                        await context
+                            .read<DettaglioDiscoCubit>()
+                            .eliminaDisco(context);
+                      },
+                      icon: CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        child: Icon(
+                          Icons.delete_forever_rounded,
+                          size: 30,
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                      ),
+                    ),
+                  IconButton(
+                    onPressed: () async {
+                      await context
+                          .read<DettaglioDiscoCubit>()
+                          .salvaDati(context);
+                    },
+                    icon: CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: Icon(
+                        Icons.save,
+                        size: 30,
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+      },
     );
   }
 }

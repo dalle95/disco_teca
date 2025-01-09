@@ -1,17 +1,18 @@
-import 'package:app_disco_teca/common/widgets/responsive.dart';
-import 'package:app_disco_teca/domain/disco/usescases/elimina_disco.dart';
-import 'package:app_disco_teca/presentation/home/bloc/dettaglio_disco_desktop_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 
 import '/service_locator.dart';
 
+import '/common/widgets/responsive.dart';
+
+import '/domain/disco/usescases/elimina_disco.dart';
 import '/domain/disco/entities/disco.dart';
 import '/domain/disco/usescases/salva_disco.dart';
 
 import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/ui_state/ui_state_cubit.dart';
+import '/presentation/home/bloc/dettaglio_disco_desktop_cubit.dart';
 
 class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
   DettaglioDiscoCubit(DiscoEntity initialState) : super(initialState);
@@ -43,9 +44,6 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
     }
     if (state.anno == null || state.anno!.isEmpty) {
       missingFields.add('Anno');
-    }
-    if (state.valore == null) {
-      missingFields.add('Valore');
     }
 
     if (missingFields.isNotEmpty) {
