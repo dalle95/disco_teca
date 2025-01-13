@@ -4,8 +4,10 @@ import '/common/helper/assets/assets_utils.dart';
 
 class LoadingView extends StatelessWidget {
   final String title;
+  final bool noTitle;
   const LoadingView({
     this.title = 'In caricamento..',
+    this.noTitle = false,
     super.key,
   });
 
@@ -16,13 +18,14 @@ class LoadingView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(getLoadingGifPath()),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 20,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          )
+          if (!noTitle)
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            )
         ],
       ),
     );

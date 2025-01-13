@@ -8,6 +8,7 @@ class DiscoModel {
   final String? titoloAlbum;
   final String? anno;
   final double? valore;
+  final String? anteprima;
   final String? brano1A;
   final String? brano2A;
   final String? brano3A;
@@ -35,6 +36,7 @@ class DiscoModel {
     this.titoloAlbum,
     this.anno,
     this.valore,
+    this.anteprima,
     this.brano1A,
     this.brano2A,
     this.brano3A,
@@ -64,6 +66,7 @@ class DiscoModel {
       titoloAlbum: '',
       anno: '',
       valore: 0,
+      anteprima: null,
       brano1A: '',
       brano2A: '',
       brano3A: '',
@@ -93,6 +96,7 @@ class DiscoModel {
     String? titoloAlbum,
     String? anno,
     double? valore,
+    String? anteprima,
     String? brano1A,
     String? brano2A,
     String? brano3A,
@@ -109,8 +113,6 @@ class DiscoModel {
     String? brano6B,
     String? brano7B,
     String? brano8B,
-    List<String>? braniLatoA,
-    List<String>? braniLatoB,
   }) {
     return DiscoModel(
       id: id ?? this.id,
@@ -122,6 +124,7 @@ class DiscoModel {
       titoloAlbum: titoloAlbum ?? this.titoloAlbum,
       anno: anno ?? this.anno,
       valore: valore ?? this.valore,
+      anteprima: anteprima ?? this.anteprima,
       brano1A: brano1A ?? this.brano1A,
       brano2A: brano2A ?? this.brano2A,
       brano3A: brano3A ?? this.brano3A,
@@ -152,6 +155,7 @@ class DiscoModel {
       'titoloAlbum': titoloAlbum,
       'anno': anno,
       'valore': valore,
+      'anteprima': anteprima,
       'brano1A': brano1A,
       'brano2A': brano2A,
       'brano3A': brano3A,
@@ -185,6 +189,7 @@ class DiscoModel {
           (json['valore'] is int)
               ? (json['valore'] as int).toDouble()
               : double.tryParse(json['valore'].toString()) ?? 0.0,
+      anteprima: json['anteprima'],
       brano1A: json['brano1A'],
       brano2A: json['brano2A'],
       brano3A: json['brano3A'],

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
 
 import '/common/widgets/loading_view.dart';
 
@@ -72,7 +71,6 @@ class ImageWidget extends StatelessWidget {
           imageUrl: image.file!,
           placeholder: (context, url) => LoadingView(),
           errorWidget: (context, url, error) {
-            Logger().e(error);
             return const Icon(Icons.error);
           },
           fit: BoxFit.cover,

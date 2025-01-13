@@ -1,3 +1,5 @@
+import 'package:app_disco_teca/presentation/home/widgets/disco_item.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -489,7 +491,7 @@ class ElencoDischi extends StatelessWidget {
                       itemCount: state.dischi.length,
                       itemBuilder: (context, index) {
                         final disco = state.dischi[index];
-                        return discoItem(context: context, disco: disco);
+                        return DiscoItem(context: context, disco: disco);
                       },
                     ),
             ),
@@ -523,7 +525,7 @@ class ElencoDischiDesktop extends StatelessWidget {
                         itemCount: state.dischi.length,
                         itemBuilder: (context, index) {
                           final disco = state.dischi[index];
-                          return discoItem(context: context, disco: disco);
+                          return DiscoItem(context: context, disco: disco);
                         },
                       ),
                     ),
@@ -596,12 +598,25 @@ Widget discoItem({
             '${disco.titoloAlbum} - ${disco.anno}',
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
-          leading: Image.asset(
-            getIconPath(
-              disco.giri,
-            ), // Seleziona l'icona giusta in base alla tipologia
-            width: 48,
-            height: 48,
+          leading: SizedBox(
+            width: 50,
+            height: 50,
+            child: disco.anteprima == null
+                ? Image.asset(
+                    getIconPath(
+                      disco.giri,
+                    ),
+                  )
+                : GestureDetector(
+                    child: CachedNetworkImage(
+                      imageUrl: disco.anteprima!,
+                      placeholder: (context, url) => LoadingView(noTitle: true),
+                      errorWidget: (context, url, error) {
+                        return const Icon(Icons.error);
+                      },
+                      fit: BoxFit.cover,
+                    ),
+                  ),
           ),
           trailing: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),

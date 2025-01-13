@@ -13,6 +13,7 @@ class DischiMapper {
       posizione: disco.posizione,
       ordine: disco.ordine,
       valore: disco.valore,
+      anteprima: disco.anteprima,
       brano1A: disco.brano1A,
       brano2A: disco.brano2A,
       brano3A: disco.brano3A,

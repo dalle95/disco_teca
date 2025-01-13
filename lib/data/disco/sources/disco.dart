@@ -3,13 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
 
+import '/service_locator.dart';
+
 import '/common/helper/errors/firebase_gestione_errori.dart';
 
 import '/data/disco/models/disco.dart';
 
 import '/domain/disco/entities/disco.dart';
-
-import '/service_locator.dart';
+import '/domain/foto_disco/entities/foto_disco.dart';
 
 abstract class DischiService {
   // Per gestire i log
@@ -33,6 +34,37 @@ class DischiApiServiceImpl extends DischiService {
     _collection = _firebaseFirestore.collection('dischi');
   }
 
+  // Funzione per caricare solo la prima immagine del fronte
+  Future<Either> loadFirstFrontImage(String discoId) async {
+    logger.d("FotoDiscoApiServiceImpl | Funzione: loadFirstFrontImage");
+
+    try {
+      // Query limitata a una sola immagine
+      final snapshot = await _firebaseFirestore
+          .collection('dischi/$discoId/immaginiFronte')
+          .orderBy('timestamp', descending: false) // Ordina per timestamp
+          .limit(1) // Limita a un solo documento
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        final data = snapshot.docs.first.data();
+        final image = ImageData(
+          id: snapshot.docs.first.id,
+          file: data['path'],
+          timestamp: DateTime.parse(data['timestamp']),
+        );
+        return Right(image);
+      } else {
+        return Right(null); // Nessuna immagine trovata
+      }
+    } catch (e) {
+      logger.e(
+          'Errore durante il caricamento della prima immagine del fronte: $e');
+      return Left(e);
+    }
+  }
+
+// Modifica della funzione getDischi per includere l'immagine anteprima
   @override
   Future<Either> getDischi(String? ordine) async {
     logger.d("DischiApiServiceImpl | Funzione: getDischi");
@@ -52,24 +84,25 @@ class DischiApiServiceImpl extends DischiService {
           )
           .get();
 
-      // Trasformo i risultati in una lista di Servizi
-      query.docs.map(
-        (element) {
-          // Formatto il servizio
-          Map<String, dynamic> elemento =
-              element.data() as Map<String, dynamic>;
-          String id = element.reference.id;
+      // Trasformo i risultati in una lista di Dischi
+      for (final element in query.docs) {
+        final Map<String, dynamic> elemento =
+            element.data() as Map<String, dynamic>;
+        final String id = element.reference.id;
 
-          DiscoModel disco = DiscoModel.fromJson(elemento);
+        // Ottieni il disco
+        DiscoModel disco = DiscoModel.fromJson(elemento).copyWith(id: id);
 
-          disco.copyWith(id: id);
+        // Ottieni la prima immagine del fronte
+        final result = await loadFirstFrontImage(id);
+        if (result.isRight()) {
+          final ImageData? anteprima = result.getOrElse(() => null);
+          disco = disco.copyWith(anteprima: anteprima?.file);
+        }
 
-          // Aggiungo il disco alla lista
-          lista.add(
-            disco,
-          );
-        },
-      ).toList();
+        // Aggiungi il disco alla lista
+        lista.add(disco);
+      }
 
       return Right(lista);
     } on FirebaseException catch (e) {
@@ -79,6 +112,7 @@ class DischiApiServiceImpl extends DischiService {
     }
   }
 
+// Modifica della funzione getDischiPerPosizione per includere l'immagine anteprima
   Future<Either> getDischiPerPosizione(String? posizione) async {
     logger.d("DischiApiServiceImpl | Funzione: getDischiPerPosizione");
 
@@ -97,24 +131,25 @@ class DischiApiServiceImpl extends DischiService {
           )
           .get();
 
-      // Trasformo i risultati in una lista di Servizi
-      query.docs.map(
-        (element) {
-          // Formatto il servizio
-          Map<String, dynamic> elemento =
-              element.data() as Map<String, dynamic>;
-          String id = element.reference.id;
+      // Trasformo i risultati in una lista di Dischi
+      for (final element in query.docs) {
+        final Map<String, dynamic> elemento =
+            element.data() as Map<String, dynamic>;
+        final String id = element.reference.id;
 
-          DiscoModel disco = DiscoModel.fromJson(elemento);
+        // Ottieni il disco
+        DiscoModel disco = DiscoModel.fromJson(elemento).copyWith(id: id);
 
-          disco.copyWith(id: id);
+        // Ottieni la prima immagine del fronte
+        final result = await loadFirstFrontImage(id);
+        if (result.isRight()) {
+          final ImageData? anteprima = result.getOrElse(() => null);
+          disco = disco.copyWith(anteprima: anteprima?.file);
+        }
 
-          // Aggiungo il disco alla lista
-          lista.add(
-            disco,
-          );
-        },
-      ).toList();
+        // Aggiungi il disco alla lista
+        lista.add(disco);
+      }
 
       return Right(lista);
     } on FirebaseException catch (e) {
