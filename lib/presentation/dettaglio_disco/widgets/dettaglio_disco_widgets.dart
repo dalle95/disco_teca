@@ -1,9 +1,11 @@
+import 'package:app_disco_teca/presentation/foto_disco/bloc/foto_disco_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/common/widgets/selezione_disco.dart';
 import '/common/widgets/textfield_custom.dart';
 import '/common/widgets/responsive.dart';
+import '/common/helper/navigation/app_navigation.dart';
 
 import '/domain/disco/entities/disco.dart';
 
@@ -13,6 +15,7 @@ import '/presentation/dettaglio_disco/bloc/lista_posizioni/listaposizioni_state.
 import '/presentation/dettaglio_disco/bloc/inserimentoposizione_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/lista_posizioni/listaposizioni_cubit.dart';
 import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
+import '../../foto_disco/pages/foto_disco_page.dart';
 
 class DettaglioDiscoAppBar extends StatelessWidget
     implements PreferredSizeWidget {
@@ -34,6 +37,26 @@ class DettaglioDiscoAppBar extends StatelessWidget
             actions: Responsive.isMobile(context)
                 ? null
                 : [
+                    IconButton(
+                      onPressed: () async {
+                        AppNavigator.push(
+                          context,
+                          BlocProvider.value(
+                            value: context.read<FotoDiscoCubit>(),
+                            child: FotoDiscoPage(),
+                          ),
+                        );
+                      },
+                      icon: CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        child: Icon(
+                          Icons.image,
+                          size: 30,
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                      ),
+                    ),
                     IconButton(
                       onPressed: () async {
                         await context
@@ -88,6 +111,26 @@ class FloatingActionButtons extends StatelessWidget {
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  IconButton(
+                    onPressed: () async {
+                      AppNavigator.push(
+                        context,
+                        BlocProvider.value(
+                          value: context.read<FotoDiscoCubit>(),
+                          child: FotoDiscoPage(),
+                        ),
+                      );
+                    },
+                    icon: CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: Icon(
+                        Icons.image,
+                        size: 30,
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
+                    ),
+                  ),
                   if (state.id != null)
                     IconButton(
                       onPressed: () async {

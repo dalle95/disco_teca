@@ -5,6 +5,7 @@ import '/common/widgets/scaffold_message.dart';
 
 import '/domain/disco/entities/disco.dart';
 
+import '/presentation/foto_disco/bloc/foto_disco_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/inserimentoposizione_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/lato_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/dettaglio_disco_cubit.dart';
@@ -29,6 +30,10 @@ class DettaglioDiscoPage extends StatelessWidget {
         ),
         BlocProvider(create: (_) => ListaPosizioniCubit()),
         BlocProvider(create: (_) => LatoCubit()),
+        BlocProvider(
+          create: (_) => FotoDiscoCubit(disco.id),
+          lazy: false,
+        )
       ],
       child: BlocListener<UIStateCubit, UIState>(
         listener: (context, state) {

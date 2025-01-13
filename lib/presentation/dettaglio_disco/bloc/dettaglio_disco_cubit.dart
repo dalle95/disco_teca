@@ -13,6 +13,7 @@ import '/domain/disco/usescases/salva_disco.dart';
 import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/ui_state/ui_state_cubit.dart';
 import '/presentation/home/bloc/dettaglio_disco_desktop_cubit.dart';
+import '/presentation/foto_disco/bloc/foto_disco_cubit.dart';
 
 class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
   DettaglioDiscoCubit(DiscoEntity initialState) : super(initialState);
@@ -73,10 +74,17 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
           context.read<UIStateCubit>().setSuccess('Disco salvato con successo');
 
           bool isMobile = Responsive.isMobile(context);
+
+          emit(discoAggiornato);
+
           if (isMobile) {
             Navigator.of(context).pop();
           }
-          emit(discoAggiornato);
+
+          // Upload images to Firebase Storage
+          await context
+              .read<FotoDiscoCubit>()
+              .uploadImagesToFirebase(discoAggiornato.id!);
         },
       );
     }
@@ -93,7 +101,7 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
         context.read<UIStateCubit>().setError('Eliminazione fallita: $error');
         emit(state);
       },
-      (data) {
+      (data) async {
         if (context.mounted) {
           context.read<DischiCubit>().aggiornaLista(
                 disco: state,
@@ -109,6 +117,8 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
           context
               .read<UIStateCubit>()
               .setSuccess('Disco eliminato con successo');
+          // Per cancellare tutte le immagini
+          context.read<FotoDiscoCubit>().deleteAllImages();
           close();
         }
       },
