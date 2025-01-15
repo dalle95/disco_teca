@@ -2,7 +2,7 @@ name: app_disco_teca
 description: "DiscoTeca: un'app per gestire la tua libreria dei dischi."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 2.1.5+1
+version: 2.2.0+2
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   
   intl:
+  image:
   image_picker:
   cupertino_icons: ^1.0.2
   flutter_bloc:

@@ -1,3 +1,5 @@
+import 'package:app_disco_teca/common/widgets/loading_view.dart';
+import 'package:app_disco_teca/presentation/dettaglio_disco/bloc/dettaglio_disco_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,6 +25,11 @@ class FotoDiscoPage extends StatelessWidget {
             child: Center(
               child: BlocBuilder<FotoDiscoCubit, FotoDiscoState>(
                 builder: (context, state) {
+                  if (state.isLoading) {
+                    return LoadingView(
+                      title: 'Analisi in corso...',
+                    );
+                  }
                   final images = state.selectedSide == 'Fronte'
                       ? state.frontImages
                       : state.backImages;
@@ -86,6 +93,24 @@ class FotoDiscoPage extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (state.frontImages.isNotEmpty &&
+                  state.backImages.isNotEmpty &&
+                  context.read<DettaglioDiscoCubit>().state.id == null)
+                IconButton(
+                  icon: CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: Icon(
+                      Icons.document_scanner_outlined,
+                      size: 30,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await context.read<FotoDiscoCubit>().analyzeImages(context);
+                    Navigator.of(context).pop();
+                  },
+                ),
               if (images.isNotEmpty)
                 IconButton(
                   icon: CircleAvatar(

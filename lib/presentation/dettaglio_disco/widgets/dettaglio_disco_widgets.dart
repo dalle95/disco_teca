@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/presentation/dettaglio_disco/bloc/ui_state/ui_state_cubit.dart';
 import 'package:app_disco_teca/presentation/foto_disco/bloc/foto_disco_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,8 +42,18 @@ class DettaglioDiscoAppBar extends StatelessWidget
                       onPressed: () async {
                         AppNavigator.push(
                           context,
-                          BlocProvider.value(
-                            value: context.read<FotoDiscoCubit>(),
+                          MultiBlocProvider(
+                            providers: [
+                              BlocProvider.value(
+                                value: context.read<UIStateCubit>(),
+                              ),
+                              BlocProvider.value(
+                                value: context.read<DettaglioDiscoCubit>(),
+                              ),
+                              BlocProvider.value(
+                                value: context.read<FotoDiscoCubit>(),
+                              ),
+                            ],
                             child: FotoDiscoPage(),
                           ),
                         );
@@ -115,8 +126,18 @@ class FloatingActionButtons extends StatelessWidget {
                     onPressed: () async {
                       AppNavigator.push(
                         context,
-                        BlocProvider.value(
-                          value: context.read<FotoDiscoCubit>(),
+                        MultiBlocProvider(
+                          providers: [
+                            BlocProvider.value(
+                              value: context.read<UIStateCubit>(),
+                            ),
+                            BlocProvider.value(
+                              value: context.read<DettaglioDiscoCubit>(),
+                            ),
+                            BlocProvider.value(
+                              value: context.read<FotoDiscoCubit>(),
+                            ),
+                          ],
                           child: FotoDiscoPage(),
                         ),
                       );

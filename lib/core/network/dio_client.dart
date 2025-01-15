@@ -8,13 +8,13 @@ class DioClient {
   DioClient()
       : _dio = Dio(
           BaseOptions(
-              baseUrl: ApiUrl.baseURL,
+              baseUrl: ApiUrl.baseUrl,
               headers: {'Content-Type': 'application/json; charset=UTF-8'},
               responseType: ResponseType.json,
               sendTimeout: const Duration(seconds: 10),
               receiveTimeout: const Duration(seconds: 10)),
         )..interceptors
-            .addAll([AuthorizationInterceptor(), LoggerInterceptor()]);
+            .addAll([AuthorizationInterceptor() /*, LoggerInterceptor()*/]);
 
   // GET METHOD
   Future<Response> get(

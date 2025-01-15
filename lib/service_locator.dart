@@ -10,6 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import '/firebase_options.dart';
 
+import '/core/network/dio_client.dart';
 import '/data/auth/repositories/auth.dart';
 import '/data/auth/sources/auth_api_service.dart';
 import '/data/disco/repositories/disco.dart';
@@ -36,11 +37,13 @@ import '/domain/auth/usecases/register_with_google.dart';
 import '/domain/foto_disco/usescases/load_images.dart';
 import '/domain/foto_disco/usescases/delete_image.dart';
 import '/domain/foto_disco/usescases/upload_images_to_firebase.dart';
-
-// Import the new repository and service for foto_disco
 import '/data/foto_disco/repositories/foto_disco.dart';
 import '/data/foto_disco/sources/foto_disco.dart';
 import '/domain/foto_disco/repositories/foto_disco.dart';
+import '/data/analisi_immagini/repositories/analisi_immagini_repository_impl.dart';
+import '/domain/analisi_immagini/repositories/analisi_immagini_repository.dart';
+import '/domain/analisi_immagini/usecases/analyze_image_usecase.dart';
+import '/data/analisi_immagini/sources/analisi_immagini.dart';
 
 final sl = GetIt.instance;
 
@@ -58,6 +61,7 @@ Future<void> setupServiceLocator() async {
   sl.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   sl.registerSingleton<Logger>(Logger());
   sl.registerSingleton<Dio>(Dio());
+  sl.registerSingleton<DioClient>(DioClient());
   sl.registerSingleton<GoogleSignIn>(GoogleSignIn());
 
   // Services
@@ -65,12 +69,15 @@ Future<void> setupServiceLocator() async {
   sl.registerSingleton<DischiService>(DischiApiServiceImpl());
   sl.registerSingleton<DownloadAppService>(DownloadAppApiServiceImpl());
   sl.registerSingleton<FotoDiscoService>(FotoDiscoApiServiceImpl());
+  sl.registerLazySingleton<OpenAIService>(() => OpenAIServiceImpl());
 
   // Repositories
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl());
   sl.registerSingleton<DischiRepository>(DischiRepositoryImpl());
   sl.registerSingleton<DownloadAppRepository>(DownloadAppRepositoryImpl());
   sl.registerSingleton<FotoDiscoRepository>(FotoDiscoRepositoryImpl());
+  sl.registerLazySingleton<AnalisiImmaginiRepository>(
+      () => AnalisiImmaginiRepositoryImpl(sl<OpenAIService>()));
 
   // Usecases
   sl.registerSingleton<RegisterUseCase>(RegisterUseCase());
@@ -92,4 +99,6 @@ Future<void> setupServiceLocator() async {
   sl.registerSingleton<DeleteImageUseCase>(DeleteImageUseCase());
   sl.registerSingleton<UploadImagesToFirebaseUseCase>(
       UploadImagesToFirebaseUseCase());
+  sl.registerFactory(
+      () => AnalyzeImageUseCase(sl<AnalisiImmaginiRepository>()));
 }

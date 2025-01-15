@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:bloc/bloc.dart';
+import 'package:app_disco_teca/common/helper/image_processing/process_image_base64.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -12,18 +15,25 @@ import '/domain/foto_disco/entities/foto_disco.dart';
 import '/domain/foto_disco/usescases/delete_image.dart';
 import '/domain/foto_disco/usescases/load_images.dart';
 import '/domain/foto_disco/usescases/upload_images_to_firebase.dart';
+import '/domain/analisi_immagini/usecases/analyze_image_usecase.dart';
+import '/domain/disco/entities/disco.dart';
+
+import '/presentation/dettaglio_disco/bloc/dettaglio_disco_cubit.dart';
+import '/presentation/dettaglio_disco/bloc/ui_state/ui_state_cubit.dart';
 
 class FotoDiscoState {
   final List<ImageData> frontImages;
   final List<ImageData> backImages;
   final String selectedSide;
   final int currentIndex;
+  final bool isLoading;
 
   FotoDiscoState({
     this.frontImages = const [],
     this.backImages = const [],
     this.selectedSide = 'Fronte',
     this.currentIndex = 1,
+    this.isLoading = false,
   });
 
   FotoDiscoState copyWith({
@@ -31,12 +41,14 @@ class FotoDiscoState {
     List<ImageData>? backImages,
     String? selectedSide,
     int? currentIndex,
+    bool? isLoading,
   }) {
     return FotoDiscoState(
       frontImages: frontImages ?? this.frontImages,
       backImages: backImages ?? this.backImages,
       selectedSide: selectedSide ?? this.selectedSide,
       currentIndex: currentIndex ?? this.currentIndex,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }
@@ -47,6 +59,7 @@ class FotoDiscoCubit extends Cubit<FotoDiscoState> {
   final DeleteImageUseCase deleteImageUseCase = sl<DeleteImageUseCase>();
   final UploadImagesToFirebaseUseCase uploadImagesToFirebaseUseCase =
       sl<UploadImagesToFirebaseUseCase>();
+  final AnalyzeImageUseCase _analyzeImageUseCase = sl<AnalyzeImageUseCase>();
 
   String? discoId;
   FotoDiscoCubit(this.discoId) : super(FotoDiscoState()) {
@@ -313,5 +326,98 @@ class FotoDiscoCubit extends Cubit<FotoDiscoState> {
     }
 
     logger.d('Tutte le immagini sono state eliminate.');
+  }
+
+  Future<void> analyzeImages(BuildContext context) async {
+    logger.d('FotoDiscoCubit | Funzione: analyzeImages');
+
+    emit(state.copyWith(isLoading: true));
+
+    // Ottieni i dati delle immagini (percorsi o bytes) per fronte e retro
+    final frontImage =
+        state.frontImages.isNotEmpty ? state.frontImages.first : null;
+    final backImage =
+        state.backImages.isNotEmpty ? state.backImages.first : null;
+
+    if (frontImage == null && backImage == null) {
+      // Gestione del caso in cui non ci siano immagini
+      context.read<UIStateCubit>().setError('Nessuna immagine da analizzare.');
+      return;
+    }
+
+    // Verifica se si tratta di piattaforma web (fileBytes) o percorsi file
+    final imageSources = [
+      if (frontImage != null) frontImage.fileBytes ?? frontImage.file,
+      if (backImage != null) backImage.fileBytes ?? backImage.file,
+    ];
+
+    // Verifica che ci siano dati validi
+    if (imageSources.isEmpty) {
+      context.read<UIStateCubit>().setError('Dati immagine non validi.');
+      return;
+    }
+
+    final imagesBase64Processed =
+        await processImagesToBase64(images: imageSources);
+
+    if (imagesBase64Processed.isEmpty) {
+      context
+          .read<UIStateCubit>()
+          .setError('Errore nella conversione delle immagini.');
+      return;
+    }
+
+    // Esegui l'analisi delle immagini
+    final result = await _analyzeImageUseCase(imagesBase64Processed);
+
+    result.fold(
+      (failure) {
+        logger.e(failure);
+        // Gestione del fallimento
+        context
+            .read<UIStateCubit>()
+            .setError('Analisi immagini fallita: $failure');
+      },
+      (data) {
+        logger.d(data);
+
+        // Estrai il campo content
+        final content = data['choices'][0]['message']['content'] as String;
+
+        // Pulisci il contenuto dal delimitatore ```json\n
+        final jsonStartIndex = content.indexOf('{');
+        final jsonEndIndex = content.lastIndexOf('}') + 1;
+        final rawJson = content.substring(jsonStartIndex, jsonEndIndex);
+
+        // Decodifica il JSON pulito
+        final extractedJson = json.decode(rawJson);
+
+        // Crea istanza di DiscoEntity
+        final discoEntity = DiscoEntity(
+          titoloAlbum: extractedJson['titoloAlbum'],
+          artista: extractedJson['artista'],
+          anno: extractedJson['anno'],
+          brano1A: extractedJson['brano1A'],
+          brano2A: extractedJson['brano2A'],
+          brano3A: extractedJson['brano3A'],
+          brano4A: extractedJson['brano4A'],
+          brano5A: extractedJson['brano5A'],
+          brano6A: extractedJson['brano6A'],
+          brano7A: extractedJson['brano7A'],
+          brano8A: extractedJson['brano8A'],
+          brano1B: extractedJson['brano1B'],
+          brano2B: extractedJson['brano2B'],
+          brano3B: extractedJson['brano3B'],
+          brano4B: extractedJson['brano4B'],
+          brano5B: extractedJson['brano5B'],
+          brano6B: extractedJson['brano6B'],
+          brano7B: extractedJson['brano7B'],
+          brano8B: extractedJson['brano8B'],
+        );
+
+        // Aggiorna lo stato del DettaglioDiscoCubit
+        context.read<DettaglioDiscoCubit>().aggiornaDisco(discoEntity);
+      },
+    );
   }
 }

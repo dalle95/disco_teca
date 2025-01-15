@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/core/constants/api_keys.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
@@ -38,7 +39,7 @@ class AuthorizationInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    String? token = await const FlutterSecureStorage().read(key: 'token');
+    String? token = APIKeys.openAi;
 
     options.headers['Authorization'] = "Bearer $token";
     handler.next(options); // continue with the Request
