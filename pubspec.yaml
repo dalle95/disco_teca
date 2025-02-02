@@ -2,7 +2,7 @@ name: app_disco_teca
 description: "DiscoTeca: un'app per gestire la tua libreria dei dischi."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 2.2.0+2
+version: 2.2.0+5
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -27,6 +27,7 @@ dependencies:
   google_sign_in:
   google_sign_in_web:
   cached_network_image:
+  introduction_screen:
 
   # Firebase
   firebase_core: ^2.27.0

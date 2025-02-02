@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/presentation/onboarding/pages/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,7 +35,7 @@ class RegisterPage extends StatelessWidget {
               );
             } else if (state.isSuccess) {
               // Navigazione alla homepage
-              AppNavigator.pushAndRemove(context, const HomePage());
+              AppNavigator.pushAndRemove(context, const OnboardingPage());
             }
           },
           child: Container(

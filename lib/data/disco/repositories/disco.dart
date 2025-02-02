@@ -69,7 +69,7 @@ class DischiRepositoryImpl extends DischiRepository {
       (error) {
         return Left(error);
       },
-      (data) async {
+      (data) {
         return Right(data);
       },
     );
