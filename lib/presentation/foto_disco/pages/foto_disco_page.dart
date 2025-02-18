@@ -167,7 +167,7 @@ class FotoDiscoPage extends StatelessWidget {
                       Navigator.of(context).pop();
                       context
                           .read<FotoDiscoCubit>()
-                          .pickImage(ImageSource.camera);
+                          .pickAnCropImage(context, ImageSource.camera);
                     },
                   ),
                 ListTile(
@@ -179,7 +179,7 @@ class FotoDiscoPage extends StatelessWidget {
                   onTap: () {
                     context
                         .read<FotoDiscoCubit>()
-                        .pickImage(ImageSource.gallery);
+                        .pickAnCropImage(context, ImageSource.gallery);
                     Navigator.of(context).pop();
                   },
                 ),

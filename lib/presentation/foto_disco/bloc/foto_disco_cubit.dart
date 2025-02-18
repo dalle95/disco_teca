@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:app_disco_teca/common/helper/image_processing/process_image_base64.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -88,80 +89,192 @@ class FotoDiscoCubit extends Cubit<FotoDiscoState> {
     );
   }
 
-  Future<void> pickImage(ImageSource source) async {
-    logger.d('FotoDiscoCubit | Funzione: pickImage');
+  // Future<void> pickImage(ImageSource source) async {
+  //   logger.d('FotoDiscoCubit | Funzione: pickImage');
+
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(source: source);
+
+  //   if (pickedFile != null) {
+  //     if (kIsWeb) {
+  //       // Gestione per piattaforma Web
+  //       final Uint8List imageBytes = await pickedFile.readAsBytes();
+
+  //       if (state.selectedSide == 'Fronte') {
+  //         emit(
+  //           state.copyWith(
+  //             frontImages: List.from(state.frontImages)
+  //               ..add(
+  //                 ImageData(
+  //                   id: null,
+  //                   fileBytes: imageBytes, // Salviamo i byte per Web
+  //                   timestamp: DateTime.now(),
+  //                 ),
+  //               ),
+  //           ),
+  //         );
+  //       } else {
+  //         emit(
+  //           state.copyWith(
+  //             backImages: List.from(state.backImages)
+  //               ..add(
+  //                 ImageData(
+  //                   id: null,
+  //                   fileBytes: imageBytes, // Salviamo i byte per Web
+  //                   timestamp: DateTime.now(),
+  //                 ),
+  //               ),
+  //           ),
+  //         );
+  //       }
+  //     } else {
+  //       // Gestione per piattaforme non web
+  //       final tempDir = await getTemporaryDirectory();
+  //       final tempPath =
+  //           '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+  //       final tempFile = await File(pickedFile.path).copy(tempPath);
+
+  //       if (state.selectedSide == 'Fronte') {
+  //         emit(
+  //           state.copyWith(
+  //             frontImages: List.from(state.frontImages)
+  //               ..add(
+  //                 ImageData(
+  //                   id: null,
+  //                   file: tempFile
+  //                       .path, // Salviamo il file per piattaforme native
+  //                   timestamp: DateTime.now(),
+  //                 ),
+  //               ),
+  //           ),
+  //         );
+  //       } else {
+  //         emit(
+  //           state.copyWith(
+  //             backImages: List.from(state.backImages)
+  //               ..add(
+  //                 ImageData(
+  //                   id: null,
+  //                   file: tempFile
+  //                       .path, // Salviamo il file per piattaforme native
+  //                   timestamp: DateTime.now(),
+  //                 ),
+  //               ),
+  //           ),
+  //         );
+  //       }
+  //     }
+  //   }
+  // }
+
+  Future<void> pickAnCropImage(BuildContext context, ImageSource source) async {
+    logger.d('FotoDiscoCubit | Funzione: pickAndCropImage');
 
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source);
 
-    if (pickedFile != null) {
-      if (kIsWeb) {
-        // Gestione per piattaforma Web
-        final Uint8List imageBytes = await pickedFile.readAsBytes();
+    if (pickedFile == null) return;
+
+    if (kIsWeb) {
+      // Per Web, leggiamo i byte dell'immagine
+      // final Uint8List imageBytes = await pickedFile.readAsBytes();
+
+      // Passiamo l'immagine al cropper
+      final CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile.path, // Anche se su Web non è usato
+        uiSettings: [
+          WebUiSettings(
+            context: context,
+            presentStyle: CropperPresentStyle.dialog, // Modal di ritaglio
+            boundary: CroppieBoundary(
+              width: 300,
+              height: 300,
+            ),
+            viewPort: CroppieViewPort(
+              width: 200,
+              height: 200,
+              type: 'square', // Usa 'circle' per ritaglio circolare
+            ),
+            enableExif: true,
+            enableZoom: true,
+            showZoomer: true,
+          ),
+        ],
+      );
+
+      if (croppedFile != null) {
+        final Uint8List croppedBytes = await croppedFile.readAsBytes();
 
         if (state.selectedSide == 'Fronte') {
           emit(
             state.copyWith(
               frontImages: List.from(state.frontImages)
-                ..add(
-                  ImageData(
+                ..add(ImageData(
                     id: null,
-                    fileBytes: imageBytes, // Salviamo i byte per Web
-                    timestamp: DateTime.now(),
-                  ),
-                ),
+                    fileBytes: croppedBytes,
+                    timestamp: DateTime.now())),
             ),
           );
         } else {
           emit(
             state.copyWith(
               backImages: List.from(state.backImages)
-                ..add(
-                  ImageData(
+                ..add(ImageData(
                     id: null,
-                    fileBytes: imageBytes, // Salviamo i byte per Web
-                    timestamp: DateTime.now(),
-                  ),
-                ),
+                    fileBytes: croppedBytes,
+                    timestamp: DateTime.now())),
             ),
           );
         }
+      }
+    } else {
+      // Per Android e iOS, gestiamo File
+      final tempDir = await getTemporaryDirectory();
+      final tempPath =
+          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final tempFile = await File(pickedFile.path).copy(tempPath);
+
+      // Passiamo il file al cropper
+      final CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: tempFile.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 100,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Ritaglia immagine',
+            toolbarColor: Theme.of(context).colorScheme.onBackground,
+            toolbarWidgetColor: Theme.of(context).colorScheme.primary,
+            lockAspectRatio: true,
+          ),
+          IOSUiSettings(
+            title: 'Ritaglia immagine',
+            aspectRatioLockEnabled: true,
+          ),
+        ],
+      );
+
+      if (croppedFile == null) {
+        return; // Evita di chiamare l'emit se il crop è annullato
+      }
+
+      final File finalFile = File(croppedFile.path);
+
+      if (state.selectedSide == 'Fronte') {
+        emit(
+          state.copyWith(
+            frontImages: List.from(state.frontImages)
+              ..add(ImageData(
+                  id: null, file: finalFile.path, timestamp: DateTime.now())),
+          ),
+        );
       } else {
-        // Gestione per piattaforme non web
-        final tempDir = await getTemporaryDirectory();
-        final tempPath =
-            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
-        final tempFile = await File(pickedFile.path).copy(tempPath);
-
-        if (state.selectedSide == 'Fronte') {
-          emit(
-            state.copyWith(
-              frontImages: List.from(state.frontImages)
-                ..add(
-                  ImageData(
-                    id: null,
-                    file: tempFile
-                        .path, // Salviamo il file per piattaforme native
-                    timestamp: DateTime.now(),
-                  ),
-                ),
-            ),
-          );
-        } else {
-          emit(
-            state.copyWith(
-              backImages: List.from(state.backImages)
-                ..add(
-                  ImageData(
-                    id: null,
-                    file: tempFile
-                        .path, // Salviamo il file per piattaforme native
-                    timestamp: DateTime.now(),
-                  ),
-                ),
-            ),
-          );
-        }
+        emit(
+          state.copyWith(
+            backImages: List.from(state.backImages)
+              ..add(ImageData(
+                  id: null, file: finalFile.path, timestamp: DateTime.now())),
+          ),
+        );
       }
     }
   }
