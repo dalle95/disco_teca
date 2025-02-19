@@ -50,6 +50,17 @@ DiscoTeca sfrutta le potenzialità di **Firebase**, utilizzando i seguenti servi
 - **FirebaseStorage**: Per la gestione del salvataggio delle foto.
 - **ChatGPT (modello GPT-4o-mini)**: Utilizzato come servizio API per la decodifica delle immagini.
 
+## Perché scegliere DiscoTeca
+
+Se sei un amante dei vinili e vuoi tenere sotto controllo la tua collezione in modo semplice e accessibile, DiscoTeca è l'app che fa per te. Che tu sia a casa o in movimento, su smartphone o desktop, l'app ti accompagna ovunque!
+
+Inizioa ad usare subito DiscoTeca e rivoluziona il modo in cui gestisci la tua collezione di vinili!
+
+[Accedi all'app web](https://disco-teca.web.app/)
+
+
+[Download l'ultima versione dell'app mobile](https://github.com/dalle95/disco_teca/releases/latest)
+
 ## Screenshot & Anteprime
 
 Ecco alcune anteprime dell'app DiscoTeca per la versione mobile.
@@ -76,12 +87,3 @@ Ecco alcune anteprime dell'app DiscoTeca per la versione mobile.
 ![Foto del disco](images/web/foto_disco.png)
 ![Profilo utente](images/web/profilo.png)
 ![Tema scuro](images/web/tema_scuro.png)
-
-
-## Perché scegliere DiscoTeca
-
-Se sei un amante dei vinili e vuoi tenere sotto controllo la tua collezione in modo semplice e accessibile, DiscoTeca è l'app che fa per te. Che tu sia a casa o in movimento, su smartphone o desktop, l'app ti accompagna ovunque!
-
-Scarica subito DiscoTeca e rivoluziona il modo in cui gestisci la tua collezione di vinili!
-
-[Accedi all'app web](https://disco-teca.web.app/)
