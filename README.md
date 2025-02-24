@@ -65,7 +65,7 @@ Inizioa ad usare subito DiscoTeca e rivoluziona il modo in cui gestisci la tua c
 
 Ecco alcune anteprime dell'app DiscoTeca per la versione mobile.
 
-### 📱 Mobile
+### Mobile
 ![Login](images/mobile/login.png)
 ![Lista dei dischi con le anteprime](images/mobile/lista_dischi.png)
 ![Ordinamento dischi](images/mobile/ordine_dischi.png)
@@ -77,7 +77,7 @@ Ecco alcune anteprime dell'app DiscoTeca per la versione mobile.
 ![Tema scuro](images/mobile/tema_scuro.png)
 
 
-### 💻 Web
+### Web
 ![Login](images/web/login.png)
 ![Lista dei dischi con le anteprime](images/web/lista_dischi.png)
 ![Ordinamento dischi](images/web/ordine_dischi.png)

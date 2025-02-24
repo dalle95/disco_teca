@@ -440,41 +440,69 @@ class SezioneLatoDisco extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        BlocBuilder<LatoCubit, String>(
-          builder: (context, lato) {
-            return ToggleButtons(
-              isSelected: [lato == 'A', lato == 'B'],
-              onPressed: (index) => context.read<LatoCubit>().toggleLato(),
-              fillColor: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(15),
-              borderColor: Theme.of(context).colorScheme.primary,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Lato A',
-                    style: TextStyle(
-                      color: lato == 'A'
-                          ? Colors.deepOrangeAccent
-                          : Theme.of(context).colorScheme.onBackground,
+        BlocBuilder<DettaglioDiscoCubit, DiscoEntity>(
+            builder: (context, disco) {
+          return disco.giri == 'CD'
+              ? ToggleButtons(
+                  disabledColor: Theme.of(context).colorScheme.surface,
+                  selectedColor: Theme.of(context).colorScheme.surface,
+                  color: Theme.of(context).colorScheme.surface,
+                  isSelected: const [true], // Always 'selected' for style
+                  onPressed: null, // No interaction
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(15),
+                  borderColor: Theme.of(context).colorScheme.primary,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: Text(
+                        'Lista',
+                        style: TextStyle(
+                          color: Colors.deepOrangeAccent,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Lato B',
-                    style: TextStyle(
-                      color: lato == 'B'
-                          ? Colors.deepOrangeAccent
-                          : Theme.of(context).colorScheme.onBackground,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+                  ],
+                )
+              : BlocBuilder<LatoCubit, String>(
+                  builder: (context, lato) {
+                    return ToggleButtons(
+                      isSelected: [lato == 'A', lato == 'B'],
+                      onPressed: (index) =>
+                          context.read<LatoCubit>().toggleLato(),
+                      fillColor: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(15),
+                      borderColor: Theme.of(context).colorScheme.primary,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'Lato A',
+                            style: TextStyle(
+                              color: lato == 'A'
+                                  ? Colors.deepOrangeAccent
+                                  : Theme.of(context).colorScheme.onBackground,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'Lato B',
+                            style: TextStyle(
+                              color: lato == 'B'
+                                  ? Colors.deepOrangeAccent
+                                  : Theme.of(context).colorScheme.onBackground,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+        }),
       ],
     );
   }
@@ -501,18 +529,10 @@ class SezioneBrani extends StatelessWidget {
                         .read<DettaglioDiscoCubit>()
                         .updateBrano1A(value),
                   ),
-                if (lato == 'B')
-                  TextFieldCustom(
-                    labelText: 'Brano 1',
-                    value: disco.brano1B,
-                    onChanged: (value) => context
-                        .read<DettaglioDiscoCubit>()
-                        .updateBrano1B(value),
-                  ),
-                const SizedBox(height: 16),
                 if ((disco.giri == '33' || disco.giri == 'CD') && lato == 'A')
                   Column(
                     children: [
+                      const SizedBox(height: 16),
                       TextFieldCustom(
                         labelText: 'Brano 2',
                         value: disco.brano2A,
@@ -571,11 +591,20 @@ class SezioneBrani extends StatelessWidget {
                       const SizedBox(height: 16),
                     ],
                   ),
-                if ((disco.giri == '33' || disco.giri == 'CD') && lato == 'B')
+                if ((lato == 'B') || disco.giri == 'CD')
+                  TextFieldCustom(
+                    labelText: disco.giri != 'CD' ? 'Brano 1' : 'Brano 9',
+                    value: disco.brano1B,
+                    onChanged: (value) => context
+                        .read<DettaglioDiscoCubit>()
+                        .updateBrano1B(value),
+                  ),
+                if ((disco.giri == '33' && lato == 'B') || disco.giri == 'CD')
                   Column(
                     children: [
+                      const SizedBox(height: 16),
                       TextFieldCustom(
-                        labelText: 'Brano 2',
+                        labelText: disco.giri != 'CD' ? 'Brano 2' : 'Brano 10',
                         value: disco.brano2B,
                         onChanged: (value) => context
                             .read<DettaglioDiscoCubit>()
@@ -583,7 +612,7 @@ class SezioneBrani extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       TextFieldCustom(
-                        labelText: 'Brano 3',
+                        labelText: disco.giri != 'CD' ? 'Brano 3' : 'Brano 11',
                         value: disco.brano3B,
                         onChanged: (value) => context
                             .read<DettaglioDiscoCubit>()
@@ -591,7 +620,7 @@ class SezioneBrani extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       TextFieldCustom(
-                        labelText: 'Brano 4',
+                        labelText: disco.giri != 'CD' ? 'Brano 4' : 'Brano 12',
                         value: disco.brano4B,
                         onChanged: (value) => context
                             .read<DettaglioDiscoCubit>()
@@ -599,7 +628,7 @@ class SezioneBrani extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       TextFieldCustom(
-                        labelText: 'Brano 5',
+                        labelText: disco.giri != 'CD' ? 'Brano 5' : 'Brano 13',
                         value: disco.brano5B,
                         onChanged: (value) => context
                             .read<DettaglioDiscoCubit>()
@@ -607,7 +636,7 @@ class SezioneBrani extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       TextFieldCustom(
-                        labelText: 'Brano 6',
+                        labelText: disco.giri != 'CD' ? 'Brano 6' : 'Brano 14',
                         value: disco.brano6B,
                         onChanged: (value) => context
                             .read<DettaglioDiscoCubit>()
@@ -615,7 +644,7 @@ class SezioneBrani extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       TextFieldCustom(
-                        labelText: 'Brano 7',
+                        labelText: disco.giri != 'CD' ? 'Brano 7' : 'Brano 15',
                         value: disco.brano7B,
                         onChanged: (value) => context
                             .read<DettaglioDiscoCubit>()
@@ -623,7 +652,7 @@ class SezioneBrani extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       TextFieldCustom(
-                        labelText: 'Brano 8',
+                        labelText: disco.giri != 'CD' ? 'Brano 8' : 'Brano 16',
                         value: disco.brano8B,
                         onChanged: (value) => context
                             .read<DettaglioDiscoCubit>()
