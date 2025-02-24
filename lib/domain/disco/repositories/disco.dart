@@ -12,6 +12,14 @@ abstract class DischiRepository {
   Future<Either> getDischi(String? ordine);
   Future<Either> getDischiPerPosizione(String? posizione);
   Future<Either> getRicercaDischi(String parametro);
+
+  Stream<Either<String, List<DiscoEntity>>> watchDischi({
+    bool withImages,
+    String? ordine,
+  });
+  Stream<Either<String, List<DiscoEntity>>> watchDischiPerPosizione(
+      String? posizione);
+
   Future<Either> salvaDisco(DiscoEntity disco);
   Future<Either> eliminaDisco(DiscoEntity disco);
 }

@@ -10,7 +10,6 @@ import '/domain/disco/usescases/elimina_disco.dart';
 import '/domain/disco/entities/disco.dart';
 import '/domain/disco/usescases/salva_disco.dart';
 
-import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
 import '/presentation/dettaglio_disco/bloc/ui_state/ui_state_cubit.dart';
 import '/presentation/home/bloc/dettaglio_disco_desktop_cubit.dart';
 import '/presentation/foto_disco/bloc/foto_disco_cubit.dart';
@@ -24,7 +23,7 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
   Future<void> salvaDati(BuildContext context) async {
     logger.d('DettaglioDiscoCubit | Funzione: salvaDati');
 
-    DiscoEntity disco = DiscoEntity.copyFrom(state);
+    // DiscoEntity disco = DiscoEntity.copyFrom(state);
 
     // Validation checks
     List<String> missingFields = [];
@@ -64,12 +63,12 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
 
           logger.d(discoAggiornato.toJson());
 
-          context.read<DischiCubit>().aggiornaLista(
-                disco: discoAggiornato,
-                tipologia: disco.id == null
-                    ? StatoAggiornamentoLista.aggiunta
-                    : StatoAggiornamentoLista.modifica,
-              );
+          // context.read<DischiCubit>().aggiornaLista(
+          //       disco: discoAggiornato,
+          //       tipologia: disco.id == null
+          //           ? StatoAggiornamentoLista.aggiunta
+          //           : StatoAggiornamentoLista.modifica,
+          //     );
 
           context.read<UIStateCubit>().setSuccess('Disco salvato con successo');
 
@@ -129,10 +128,10 @@ class DettaglioDiscoCubit extends Cubit<DiscoEntity> {
       },
       (data) async {
         if (context.mounted) {
-          context.read<DischiCubit>().aggiornaLista(
-                disco: state,
-                tipologia: StatoAggiornamentoLista.eliminazione,
-              );
+          // context.read<DischiCubit>().aggiornaLista(
+          //       disco: state,
+          //       tipologia: StatoAggiornamentoLista.eliminazione,
+          //     );
           bool isMobile = Responsive.isMobile(context);
 
           if (isMobile) {

@@ -264,49 +264,63 @@ class SezioneInformazioniDisco extends StatelessWidget {
                     posizioneEsistente
                         ? BlocBuilder<ListaPosizioniCubit, ListaPosizioniState>(
                             builder: (context, state) {
-                              if (state is ListaPosizioniLoading) {
+                              // 1) Loading
+                              if (state.isLoading) {
                                 return const CircularProgressIndicator();
                               }
-                              if (state is ListaPosizioniLoaded) {
-                                return DropdownButtonFormField<String>(
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
-                                  ),
-                                  value: context
-                                      .read<DettaglioDiscoCubit>()
-                                      .state
-                                      .posizione,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Posizione'),
-                                  items:
-                                      state.lista.map<DropdownMenuItem<String>>(
-                                    (posizione) {
-                                      return DropdownMenuItem<String>(
-                                        value: posizione,
-                                        child: Text(posizione),
-                                      );
-                                    },
-                                  ).toList(),
-                                  onChanged: (String? value) async {
-                                    if (value != null) {
-                                      context
-                                          .read<DettaglioDiscoCubit>()
-                                          .updatePosizione(value);
 
-                                      int ordine = await context
-                                          .read<DischiCubit>()
-                                          .getOrdinePosizione(posizione: value);
-                                      context
-                                          .read<DettaglioDiscoCubit>()
-                                          .updateOrdine(ordine.toString());
-                                    }
-                                  },
+                              // 2) Error
+                              if (state.errorMessage != null) {
+                                return Text(
+                                  'Errore: ${state.errorMessage}',
+                                  style: const TextStyle(color: Colors.red),
                                 );
                               }
-                              return Container();
+
+                              // 3) Show the dropdown if we have a valid list
+                              final listaPosizioni = state.lista;
+                              if (listaPosizioni.isEmpty) {
+                                return const Text(
+                                    'Nessuna posizione disponibile');
+                              }
+
+                              return DropdownButtonFormField<String>(
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                ),
+                                value: context
+                                    .read<DettaglioDiscoCubit>()
+                                    .state
+                                    .posizione,
+                                decoration: const InputDecoration(
+                                    labelText: 'Posizione'),
+                                items:
+                                    state.lista.map<DropdownMenuItem<String>>(
+                                  (posizione) {
+                                    return DropdownMenuItem<String>(
+                                      value: posizione,
+                                      child: Text(posizione),
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (String? value) async {
+                                  if (value != null) {
+                                    context
+                                        .read<DettaglioDiscoCubit>()
+                                        .updatePosizione(value);
+
+                                    int ordine = await context
+                                        .read<DischiCubit>()
+                                        .getOrdinePosizione(posizione: value);
+                                    context
+                                        .read<DettaglioDiscoCubit>()
+                                        .updateOrdine(ordine.toString());
+                                  }
+                                },
+                              );
                             },
                           )
                         : TextFieldCustom(

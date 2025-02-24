@@ -1,7 +1,7 @@
-import 'package:app_disco_teca/core/constants/api_keys.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
+
+import '/core/constants/api_keys.dart';
 
 /// This interceptor is used to show request and response logs
 class LoggerInterceptor extends Interceptor {

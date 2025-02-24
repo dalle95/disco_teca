@@ -1,3 +1,4 @@
+import 'package:app_disco_teca/domain/disco/usescases/watch_dischi.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -85,6 +86,7 @@ Future<void> setupServiceLocator() async {
   sl.registerSingleton<IsLoggedInUseCase>(IsLoggedInUseCase());
   sl.registerSingleton<LogoutUseCase>(LogoutUseCase());
   sl.registerSingleton<GetDischiUseCase>(GetDischiUseCase());
+  sl.registerSingleton<WatchDischiUseCase>(WatchDischiUseCase());
   sl.registerSingleton<GetDischiPerPosizioneUseCase>(
       GetDischiPerPosizioneUseCase());
   sl.registerSingleton<GetRicercaDischiUseCase>(GetRicercaDischiUseCase());

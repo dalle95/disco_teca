@@ -1,15 +1,30 @@
-import 'package:app_disco_teca/domain/disco/entities/disco.dart';
+import '/domain/disco/entities/disco.dart';
 
-abstract class DischiState {}
+class DischiCubitState {
+  final bool isLoading;
+  final String? errorMessage;
 
-class DischiLoading extends DischiState {}
+  final List<DiscoEntity> dischi; // Complete list
+  final List<DiscoEntity> dischiFiltrati; // Filtered list
 
-class DischiLoaded extends DischiState {
-  final List<DiscoEntity> dischi;
-  DischiLoaded({required this.dischi});
-}
+  const DischiCubitState({
+    this.isLoading = false,
+    this.errorMessage,
+    this.dischi = const [],
+    this.dischiFiltrati = const [],
+  });
 
-class DischiFailureLoad extends DischiState {
-  final String errorMessage;
-  DischiFailureLoad({required this.errorMessage});
+  DischiCubitState copyWith({
+    bool? isLoading,
+    String? errorMessage,
+    List<DiscoEntity>? dischi,
+    List<DiscoEntity>? dischiFiltrati,
+  }) {
+    return DischiCubitState(
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage,
+      dischi: dischi ?? this.dischi,
+      dischiFiltrati: dischiFiltrati ?? this.dischiFiltrati,
+    );
+  }
 }

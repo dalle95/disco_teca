@@ -135,7 +135,7 @@ class DiscoItem extends StatelessWidget {
                       ),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       width: popupWidth,
                       height: popupHeight,
                     ),

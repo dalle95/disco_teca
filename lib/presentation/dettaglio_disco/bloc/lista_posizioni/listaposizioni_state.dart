@@ -1,13 +1,23 @@
-abstract class ListaPosizioniState {}
-
-class ListaPosizioniLoading extends ListaPosizioniState {}
-
-class ListaPosizioniLoaded extends ListaPosizioniState {
+class ListaPosizioniState {
+  final bool isLoading;
+  final String? errorMessage;
   final List<String> lista;
-  ListaPosizioniLoaded({required this.lista});
-}
 
-class ListaPosizioniFailureLoad extends ListaPosizioniState {
-  final String errorMessage;
-  ListaPosizioniFailureLoad({required this.errorMessage});
+  const ListaPosizioniState({
+    this.isLoading = false,
+    this.errorMessage,
+    this.lista = const [],
+  });
+
+  ListaPosizioniState copyWith({
+    bool? isLoading,
+    String? errorMessage,
+    List<String>? lista,
+  }) {
+    return ListaPosizioniState(
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage,
+      lista: lista ?? this.lista,
+    );
+  }
 }

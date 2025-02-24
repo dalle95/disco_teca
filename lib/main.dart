@@ -6,13 +6,7 @@ import '/service_locator.dart';
 
 import '/common/bloc/theme/theme_cubit.dart';
 
-import '/presentation/splash/bloc/splash_cubit.dart';
 import '/presentation/splash/pages/splash.dart';
-import '/presentation/home/bloc/dischi_cubit/dischi_cubit.dart';
-import '/presentation/home/bloc/ordine_dischi_cubit.dart';
-import '/presentation/home/bloc/search_cubit.dart';
-import '/presentation/filtro_dischi/bloc/giri_cubit.dart';
-import '/presentation/filtro_dischi/bloc/posizione_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,18 +22,8 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
     );
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => ThemeCubit(),
-        ),
-        BlocProvider(create: (_) => SplashCubit()),
-        BlocProvider(create: (_) => DischiCubit()),
-        BlocProvider(create: (_) => OrdineDischiCubit()),
-        BlocProvider(create: (_) => SearchCubit()),
-        BlocProvider(create: (_) => PosizioneCubit()),
-        BlocProvider(create: (_) => GiriCubit()),
-      ],
+    return BlocProvider(
+      create: (_) => ThemeCubit(),
       child: BlocBuilder<ThemeCubit, ThemeData>(
         builder: (context, theme) {
           return MaterialApp(

@@ -184,6 +184,13 @@ class FotoDiscoCubit extends Cubit<FotoDiscoState> {
         sourcePath: pickedFile.path, // Anche se su Web non è usato
         uiSettings: [
           WebUiSettings(
+            translations: WebTranslations(
+              title: 'Ritaglia Immagine',
+              rotateLeftTooltip: 'Ruota di 90° a sinistra',
+              rotateRightTooltip: 'Ruota di 90° a destra',
+              cancelButton: 'Annulla',
+              cropButton: 'Ritaglia',
+            ),
             context: context,
             presentStyle: CropperPresentStyle.dialog, // Modal di ritaglio
             boundary: CroppieBoundary(

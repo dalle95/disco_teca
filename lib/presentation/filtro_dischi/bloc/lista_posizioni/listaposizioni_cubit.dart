@@ -1,39 +1,76 @@
+import 'dart:async';
+
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 
 import '/service_locator.dart';
 
-import '/domain/disco/usescases/get_dischi.dart';
+import '/domain/disco/entities/disco.dart';
+import '/domain/disco/usescases/watch_dischi.dart';
 
 import '/presentation/filtro_dischi/bloc/lista_posizioni/listaposizioni_state.dart';
 
 class ListaPosizioniCubit extends Cubit<ListaPosizioniState> {
-  ListaPosizioniCubit() : super(ListaPosizioniLoading());
+  ListaPosizioniCubit() : super(const ListaPosizioniState(isLoading: true)) {
+    logger.d('ListaPosizioniCubit | Constructor');
+    watchListaPosizioni();
+  }
 
-  // Per gestire i log
   final logger = sl<Logger>();
+  StreamSubscription<Either<Object, List<DiscoEntity>>>? _subscription;
 
-  void getListaPosizioni() async {
-    logger.d('ListaPosizioniCubit | Funzione: getListaPosizioni');
+  void watchListaPosizioni() {
+    logger.d('ListaPosizioniCubit | Function: watchListaPosizioni');
 
-    var returnedData = await sl<GetDischiUseCase>().call();
+    // Start loading
+    emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    returnedData.fold(
-      (error) {
-        emit(ListaPosizioniFailureLoad(errorMessage: error));
-      },
-      (data) {
-        emit(
-          ListaPosizioniLoaded(
-            lista: data
-                .map((r) => r.posizione)
-                .where((posizione) => posizione != null)
-                .cast<String>()
-                .toSet()
-                .toList(),
-          ),
-        );
-      },
-    );
+    // Cancel any existing subscription
+    _subscription?.cancel();
+
+    // Subscribe to the watch use case
+    _subscription = sl<WatchDischiUseCase>().call().listen((either) {
+      either.fold(
+        (error) {
+          logger.e("Error in watchListaPosizioni: $error");
+          emit(
+            state.copyWith(
+              isLoading: false,
+              errorMessage: error.toString(),
+              lista: [],
+            ),
+          );
+        },
+        (dischi) {
+          final listaPosizioni = dischi
+              .map((d) => d.posizione)
+              .where((pos) => pos != null)
+              .cast<String>()
+              .toSet()
+              .toList();
+
+          emit(
+            state.copyWith(
+              isLoading: false,
+              errorMessage: null,
+              lista: listaPosizioni,
+            ),
+          );
+        },
+      );
+    }, onError: (error) {
+      logger.e("Stream error: $error");
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: error.toString(),
+      ));
+    });
+  }
+
+  @override
+  Future<void> close() async {
+    await _subscription?.cancel();
+    return super.close();
   }
 }

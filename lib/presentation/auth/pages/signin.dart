@@ -1,4 +1,3 @@
-import 'package:app_disco_teca/presentation/onboarding/pages/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,8 +9,8 @@ import '/core/configs/assets/app_images.dart';
 import '/presentation/auth/widgets/google_signin_button.dart';
 import '/presentation/auth/bloc/auth_cubit.dart';
 import '/presentation/auth/bloc/auth_state.dart';
-import '/presentation/home/pages/home.dart';
 import '/presentation/auth/widgets/auth_widgets.dart';
+import '/presentation/onboarding/pages/onboarding_page.dart';
 
 class SigninPage extends StatelessWidget {
   SigninPage({super.key});

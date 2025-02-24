@@ -19,6 +19,14 @@ abstract class DischiService {
   Future<Either> getDischi(String? ordine);
   Future<Either> getDischiPerPosizione(String? posizione);
   Future<Either> getRicercaDischi(String parametro);
+
+  Stream<Either<String, List<DiscoModel>>> watchDischi({
+    bool? withImages,
+    String? ordine,
+  });
+  Stream<Either<String, List<DiscoModel>>> watchDischiPerPosizione(
+      String? posizione);
+
   Future<Either> salvaDisco(DiscoEntity disco);
   Future<Either> eliminaDisco(DiscoEntity disco);
 }
@@ -93,12 +101,12 @@ class DischiApiServiceImpl extends DischiService {
         // Ottieni il disco
         DiscoModel disco = DiscoModel.fromJson(elemento).copyWith(id: id);
 
-        // Ottieni la prima immagine del fronte
-        final result = await loadFirstFrontImage(id);
-        if (result.isRight()) {
-          final ImageData? anteprima = result.getOrElse(() => null);
-          disco = disco.copyWith(anteprima: anteprima?.file);
-        }
+        // // Ottieni la prima immagine del fronte
+        // final result = await loadFirstFrontImage(id);
+        // if (result.isRight()) {
+        //   final ImageData? anteprima = result.getOrElse(() => null);
+        //   disco = disco.copyWith(anteprima: anteprima?.file);
+        // }
 
         // Aggiungi il disco alla lista
         lista.add(disco);
@@ -140,12 +148,12 @@ class DischiApiServiceImpl extends DischiService {
         // Ottieni il disco
         DiscoModel disco = DiscoModel.fromJson(elemento).copyWith(id: id);
 
-        // Ottieni la prima immagine del fronte
-        final result = await loadFirstFrontImage(id);
-        if (result.isRight()) {
-          final ImageData? anteprima = result.getOrElse(() => null);
-          disco = disco.copyWith(anteprima: anteprima?.file);
-        }
+        // // Ottieni la prima immagine del fronte
+        // final result = await loadFirstFrontImage(id);
+        // if (result.isRight()) {
+        //   final ImageData? anteprima = result.getOrElse(() => null);
+        //   disco = disco.copyWith(anteprima: anteprima?.file);
+        // }
 
         // Aggiungi il disco alla lista
         lista.add(disco);
@@ -231,6 +239,108 @@ class DischiApiServiceImpl extends DischiService {
       logger.d('getRicercaDischi | Funzione: getDischi | Errore: ${e.message}');
       return Left(FirebaseGestioneErrori.descrizioneErrore(e));
     }
+  }
+
+  @override
+  Stream<Either<String, List<DiscoModel>>> watchDischi({
+    bool? withImages,
+    String? ordine,
+  }) {
+    logger.d("DischiApiServiceImpl | Function: watchDischi");
+
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      // Return a stream that immediately emits Left(...) once
+      return Stream.value(
+          Left<String, List<DiscoModel>>("User not authenticated"));
+    }
+
+    final query = _collection
+        .where("userID", isEqualTo: user.uid)
+        .orderBy(ordine ?? 'titoloAlbum', descending: false)
+        .snapshots();
+
+    // Convert QuerySnapshot -> Either<Object, List<DiscoModel>>
+    return query
+        .asyncMap<Either<String, List<DiscoModel>>>((querySnapshot) async {
+      try {
+        final List<DiscoModel> lista = [];
+
+        for (final doc in querySnapshot.docs) {
+          final Map<String, dynamic> elemento =
+              doc.data() as Map<String, dynamic>;
+          final String id = doc.id;
+
+          DiscoModel disco = DiscoModel.fromJson(elemento).copyWith(id: id);
+
+          if (withImages == true) {
+            // Optionally load the first front image
+            final result = await loadFirstFrontImage(id);
+            if (result.isRight()) {
+              final ImageData? anteprima = result.getOrElse(() => null);
+              disco = disco.copyWith(anteprima: anteprima?.file);
+            }
+          }
+
+          lista.add(disco);
+        }
+
+        return Right<String, List<DiscoModel>>(lista);
+      } catch (e) {
+        logger.e("Error in watchDischi: $e");
+        return Left(e.toString());
+      }
+    }).handleError((error) {
+      logger.e("Stream error: $error");
+      return Left(error);
+    });
+  }
+
+  @override
+  Stream<Either<String, List<DiscoModel>>> watchDischiPerPosizione(
+      String? posizione) {
+    logger.d("DischiApiServiceImpl | Function: watchDischiPerPosizione");
+
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      return Stream.value(
+          Left<String, List<DiscoModel>>("User not authenticated"));
+    }
+
+    final query = _collection
+        .where("userID", isEqualTo: user.uid)
+        .where("posizione", isEqualTo: posizione)
+        .snapshots();
+
+    return query
+        .asyncMap<Either<String, List<DiscoModel>>>((querySnapshot) async {
+      try {
+        final List<DiscoModel> lista = [];
+
+        for (final doc in querySnapshot.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          final id = doc.id;
+
+          DiscoModel disco = DiscoModel.fromJson(data).copyWith(id: id);
+
+          // Optionally load the first front image
+          final result = await loadFirstFrontImage(id);
+          if (result.isRight()) {
+            final ImageData? anteprima = result.getOrElse(() => null);
+            disco = disco.copyWith(anteprima: anteprima?.file);
+          }
+          lista.add(disco);
+        }
+
+        return Right<String, List<DiscoModel>>(lista);
+      } catch (e) {
+        logger.e("Error watchDischiPerPosizione: $e");
+        return Left<String, List<DiscoModel>>(e.toString());
+      }
+    }).handleError((error) {
+      logger.e("Stream error: $error");
+      return Left(error);
+    });
   }
 
   @override

@@ -61,6 +61,50 @@ class DischiRepositoryImpl extends DischiRepository {
   }
 
   @override
+  Stream<Either<String, List<DiscoEntity>>> watchDischi({
+    bool? withImages,
+    String? ordine,
+  }) {
+    logger.d("DischiRepositoryImpl | Function: watchDischi($ordine)");
+
+    // Convert from Service (DiscoModel) to Entity (DiscoEntity)
+    return sl<DischiService>()
+        .watchDischi(ordine: ordine, withImages: withImages)
+        .map<Either<String, List<DiscoEntity>>>((either) {
+      if (either.isLeft()) {
+        // Pass the error along
+        return Left(either.swap().getOrElse(() => 'Unknown error'));
+      } else {
+        // Convert the Right<List<DiscoModel>> -> Right<List<DiscoEntity>>
+        final models = either.getOrElse(() => []);
+        final List<DiscoEntity> entities =
+            models.map((model) => DischiMapper.toEntity(model)).toList();
+        return Right(entities);
+      }
+    });
+  }
+
+  @override
+  Stream<Either<String, List<DiscoEntity>>> watchDischiPerPosizione(
+      String? posizione) {
+    logger.d(
+        "DischiRepositoryImpl | Function: watchDischiPerPosizione($posizione)");
+
+    return sl<DischiService>()
+        .watchDischiPerPosizione(posizione)
+        .map<Either<String, List<DiscoEntity>>>((either) {
+      if (either.isLeft()) {
+        return Left(either.swap().getOrElse(() => 'Unknown error'));
+      } else {
+        final models = either.getOrElse(() => []);
+        final List<DiscoEntity> entities =
+            models.map((model) => DischiMapper.toEntity(model)).toList();
+        return Right(entities);
+      }
+    });
+  }
+
+  @override
   Future<Either> salvaDisco(DiscoEntity disco) async {
     logger.d("DischiRepositoryImpl | Funzione: salvaDisco");
 

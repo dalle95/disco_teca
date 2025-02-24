@@ -28,7 +28,7 @@ class SezioneDisco extends StatelessWidget {
             return buildSelezioneDisco(
               context: context,
               onTap: (tipo) {
-                context.read<GiriCubit>().setGiri(context: context, giri: tipo);
+                context.read<GiriCubit>().setGiri(giri: tipo);
                 Navigator.of(context).pop();
               },
               tipologia: giri,
@@ -55,43 +55,58 @@ class SezionePosizione extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         BlocProvider(
-          create: (_) => ListaPosizioniCubit()..getListaPosizioni(),
+          create: (_) => ListaPosizioniCubit(),
           child: BlocBuilder<ListaPosizioniCubit, ListaPosizioniState>(
             builder: (context, state) {
-              if (state is ListaPosizioniLoading) {
+              // 1) Loading
+              if (state.isLoading) {
                 return const CircularProgressIndicator();
               }
-              if (state is ListaPosizioniLoaded) {
-                return BlocBuilder<PosizioneCubit, String?>(
-                  builder: (context, posizione) {
-                    return DropdownButtonFormField<String>(
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ),
-                      value: posizione,
-                      decoration: const InputDecoration(labelText: 'Posizione'),
-                      items: state.lista.map<DropdownMenuItem<String>>(
-                        (posizione) {
-                          return DropdownMenuItem<String>(
-                            value: posizione,
-                            child: Text(posizione),
-                          );
-                        },
-                      ).toList(),
-                      onChanged: (String? value) {
-                        if (value != null) {
-                          context
-                              .read<PosizioneCubit>()
-                              .setPosizione(context: context, posizione: value);
-                          Navigator.of(context).pop();
-                        }
-                      },
-                    );
-                  },
+
+              // 2) Error
+              if (state.errorMessage != null) {
+                return Text(
+                  'Errore: ${state.errorMessage}',
+                  style: const TextStyle(color: Colors.red),
                 );
               }
-              return Container();
+
+              // 3) Show the dropdown if we have a valid list
+              final listaPosizioni = state.lista;
+              if (listaPosizioni.isEmpty) {
+                return const Text('Nessuna posizione disponibile');
+              }
+
+              // Show the dropdown using the current PosizioneCubit
+              return BlocBuilder<PosizioneCubit, String?>(
+                builder: (context, posizione) {
+                  return DropdownButtonFormField<String>(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                    value: posizione,
+                    decoration: const InputDecoration(labelText: 'Posizione'),
+                    items: listaPosizioni.map<DropdownMenuItem<String>>(
+                      (pos) {
+                        return DropdownMenuItem<String>(
+                          value: pos,
+                          child: Text(pos),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (String? value) {
+                      if (value != null) {
+                        // Update the PosizioneCubit
+                        context
+                            .read<PosizioneCubit>()
+                            .setPosizione(posizione: value);
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  );
+                },
+              );
             },
           ),
         ),
